@@ -1,0 +1,77 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #777;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+
+}
+
+.landing-container header {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.landing-container header>h1>span {
+  color: brown;
+  font-size: 4.5rem;
+  font-family: 'Permanent Marker', cursive;
+}
+
+.landing-container header>h1 {
+  font-size: 3.5rem;
+  font-family: 'Ubuntu', sans-serif;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.landing-container header>h2 {
+  margin-top: 0;
+  padding-top: 0;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 0.85rem;
+}
+
+.landing-container .game-info {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.game-info>section {
+  width: 40%;
+  text-align: center;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.play-game {
+  text-align: center;
+  margin: 25px auto;
+}
+
+.instructions>p {
+  text-align: justify;
+  padding: 5px;
+}
+
+.game-info>h3 {
+  border: none;
+  border-bottom: 2px dashed #fff;
+  color: #fff;
+  background-color: #007faa;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+
+a.link-btn {
+  text-decoration: none;
+  border: 2px dashed #fff;
+  border-radius: 3px;
+  color: #fff;
+  padding: 5px;
+  font-weight: 600;
+}

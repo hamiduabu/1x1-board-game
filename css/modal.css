@@ -1,0 +1,120 @@
+* {
+  box-sizing: border-box;
+}
+
+.modal {
+  color: #222;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  /* transition: opacity 400ms ease-in; */
+  pointer-events: none;
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+.modal:target {
+  opacity: 1;
+  pointer-events: auto;
+  display: flex;
+}
+
+.modal .modal-content {
+  background: #fff;
+  /* background: linear-gradient(#fff, #ddd); */
+  width: 70%;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.modal header.modal-header {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.modal header.modal-header>section {
+  text-align: center;
+}
+
+.modal header.modal-header .close-btn {
+  text-align: end;
+}
+
+header.modal-header h3 {
+  margin-top: 0;
+
+}
+
+header.modal-header a {
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+}
+
+header.modal-header a:hover {
+  color: #777;
+}
+
+
+.modal-body {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+}
+
+.modal-select-player .player1,
+.modal-select-player .player2 {
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.modal footer.modal-footer {
+  text-align: center;
+}
+
+.modal footer.modal-footer button {
+  padding: 7px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 600;
+}
+
+.player-name {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.avatar-options {
+  width: 100%;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.avatar-options label {
+  width: 30%;
+  text-align: center;
+}
+
+.avatar-options img {
+  width: 50px;
+}
+
+.avatar-options input[type="radio"] {
+  display: none;
+}
+
+.avatar-options input[type="radio"]:checked+img {
+  border: 2px dashed green;
+}
