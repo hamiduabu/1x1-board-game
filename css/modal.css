@@ -67,7 +67,7 @@ header.modal-header a:hover {
 }
 
 
-.modal-body {
+.player-input {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-evenly;
