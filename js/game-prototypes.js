@@ -2,15 +2,15 @@ export class Player {
   constructor(
     name,
     avatarId,
-    mainAvatar,
-    miniAvatar,
+    mainImgUrl,
+    miniImgUrl,
     weaponId = 13,
     health = 100
   ) {
     this.name = name;
     this.avatarId = avatarId;
-    this.mainAvatar = mainAvatar;
-    this.miniAvatar = miniAvatar;
+    this.mainImgUrl = mainImgUrl;
+    this.miniImgUrl = miniImgUrl;
     this.weaponId = weaponId;
     this.health = health;
   }

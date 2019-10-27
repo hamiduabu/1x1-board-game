@@ -48,8 +48,8 @@ export function getPlayerAvatarDetails(playerSelection, arr) {
   for (const obj of arr) {
     if (extractNumbers(playerSelection.id) === obj.id) {
       playerOptions.avatarId = obj.id;
-      playerOptions.mainAvatar = obj.imgUrl;
-      playerOptions.miniAvatar = obj.miniImgUrl;
+      playerOptions.mainImgUrl = obj.imgUrl;
+      playerOptions.miniImgUrl = obj.miniImgUrl;
     }
   }
   return playerOptions;

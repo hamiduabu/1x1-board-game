@@ -55,6 +55,10 @@ header h1 {
   width: 45px;
 }
 
+.weapon-board-img {
+  width: 25px;
+}
+
 .player-box-1 {
   background-color: rebeccapurple;
   /* grid-row: span 10; */
