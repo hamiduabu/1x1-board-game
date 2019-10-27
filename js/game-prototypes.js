@@ -1,7 +1,16 @@
-class Player {
-  constructor(name, avatar, weaponId = 13, health = 100) {
+export class Player {
+  constructor(
+    name,
+    avatarId,
+    mainAvatar,
+    miniAvatar,
+    weaponId = 13,
+    health = 100
+  ) {
     this.name = name;
-    this.avatar = avatar;
+    this.avatarId = avatarId;
+    this.mainAvatar = mainAvatar;
+    this.miniAvatar = miniAvatar;
     this.weaponId = weaponId;
     this.health = health;
   }
@@ -13,10 +22,23 @@ class Player {
   defend() {}
 }
 
-class Board {
-  constructor(grids = 100, element = 'section') {
+export class Board {
+  constructor(grids = 10, element = 'section') {
     this.grids = grids;
     this.element = element;
   }
-  createBoard() {}
+  createGrid() {
+    const documentFragment = document.createDocumentFragment();
+    for (let i = 0; i < this.grids; i += 1) {
+      const parentSection = document.createElement(this.element);
+      parentSection.classList.add('outer-box');
+      for (let j = 0; j < this.grids; j += 1) {
+        const childSection = document.createElement(this.element);
+        childSection.classList.add('inner-box');
+        parentSection.appendChild(childSection);
+      }
+      documentFragment.appendChild(parentSection);
+    }
+    return documentFragment;
+  }
 }
