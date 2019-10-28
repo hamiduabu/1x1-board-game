@@ -94,6 +94,9 @@ export function startGame() {
     // append to dom
     document.querySelector('.game-board').appendChild(boardFragment);
   });
+
+  // Add movements
+  addMovements();
 }
 
 function setupInactiveSquares(nodeList, inactiveSquares) {
@@ -154,4 +157,75 @@ function getPlayerDetails() {
     playerTwoAvatarDetails.miniImgUrl
   );
   return [playerOne, playerTwo];
+}
+
+// Movements
+function addMovements() {
+  let numberOfTurns = 0;
+
+  document.addEventListener('keyup', function(event) {
+    const playerAvatar1 = document.querySelector('#player1');
+    const playerAvatar2 = document.querySelector('#player2');
+    let playerTurn = playerAvatar1;
+
+    return (function() {
+      if (numberOfTurns >= 3) {
+        playerTurn = playerAvatar2;
+      }
+      if (numberOfTurns === 6) {
+        playerTurn = playerAvatar1;
+        numberOfTurns = 0;
+      }
+
+      if (event.code === 'ArrowUp') {
+        const topSquare =
+          playerTurn.parentElement.parentElement.previousElementSibling
+            .children[getPresentPositionIndex(playerTurn)];
+        if (!topSquare || topSquare.classList.contains('inactive')) {
+          return domNodes.toggleError();
+        }
+        topSquare.appendChild(playerTurn);
+        numberOfTurns += 1;
+      }
+      if (event.code === 'ArrowDown') {
+        const bottomSquare =
+          playerTurn.parentElement.parentElement.nextElementSibling.children[
+            getPresentPositionIndex(playerTurn)
+          ];
+        if (!bottomSquare || bottomSquare.classList.contains('inactive')) {
+          return domNodes.toggleError();
+        }
+        bottomSquare.appendChild(playerTurn);
+        numberOfTurns += 1;
+      }
+      if (event.code === 'ArrowLeft') {
+        const leftSquare = playerTurn.parentElement.previousElementSibling;
+        if (!leftSquare || leftSquare.classList.contains('inactive')) {
+          return domNodes.toggleError();
+        }
+        leftSquare.appendChild(playerTurn);
+        numberOfTurns += 1;
+      }
+      if (event.code === 'ArrowRight') {
+        const rightSquare = playerTurn.parentElement.nextElementSibling;
+        if (!rightSquare || rightSquare.classList.contains('inactive')) {
+          return domNodes.toggleError();
+        }
+        rightSquare.appendChild(playerTurn);
+        numberOfTurns += 1;
+      }
+    })();
+  });
+}
+
+function getPresentPositionIndex(p1) {
+  // const <player-img> = document.querySelector('<player-img-selector>')
+  const row = p1.parentElement.parentElement.children;
+  let positionIndex;
+  for (const item of row) {
+    if (item.firstElementChild === p1) {
+      positionIndex = Array.from(row).indexOf(item);
+    }
+  }
+  return positionIndex;
 }
