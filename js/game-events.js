@@ -15,7 +15,8 @@ export function startGame() {
   domNodes.startGameBtn.addEventListener('click', () => {
     console.log('Starting ...');
     //Get player details using destructuring
-    const { playerOne, playerTwo } = getPlayerDetails();
+    // const [playerOne, playerTwo] = getPlayerDetails();
+    const players = getPlayerDetails();
 
     // Reset Modal Form
     domNodes.playerInputForm.reset();
@@ -32,6 +33,7 @@ export function startGame() {
 
     // Get four(4) random weapons
     const availableWeapons = utils.generateUniqueRandomItems(weapons, 4);
+    console.log(availableWeapons);
 
     // Get index numbers for 10 Inactive squares
     const inactiveArea = utils.generateUniqueRandomNumbers(
@@ -40,8 +42,7 @@ export function startGame() {
       10
     );
 
-    // Position players
-
+    // Get index number to position players
     const playerOnePosition = utils.generateUniqueRandomNumbers(
       0,
       45,
@@ -53,6 +54,7 @@ export function startGame() {
       ...playerOnePosition
     ]);
     const playersPosition = [...playerOnePosition, ...playerTwoPosition];
+
     console.log(playersPosition);
     console.log(inactiveArea);
 
@@ -64,58 +66,64 @@ export function startGame() {
     ]);
     console.log(weaponSquares);
 
-    for (let i = 0; i < gridSquares.length; i += 1) {
-      if (inactiveArea.includes(i)) {
-        gridSquares[i].classList.add('inactive');
+    // Setup inactive squares
+    setupInactiveSquares(gridSquares, inactiveArea);
+
+    // Setup Players on board
+    setupBoardItem(
+      gridSquares,
+      playersPosition,
+      players,
+      ['avatar-board-img'],
+      idx => `player${idx + 1}`
+    );
+
+    // Setup Weapons on board
+    setupBoardItem(
+      gridSquares,
+      weaponSquares,
+      availableWeapons,
+      ['weapon-board-img'],
+      function(idx) {
+        return `weapon${availableWeapons[idx].id}`;
       }
-    }
-    for (let i = 0; i < gridSquares.length; i += 1) {
-      if (i === playerOnePosition[0]) {
-        const imgElement = document.createElement('img');
-        imgElement.src = playerOne.miniAvatar;
-        imgElement.classList.add('player1', 'avatar-board-img');
-        gridSquares[i].appendChild(imgElement);
-      }
-      if (i === playerTwoPosition[0]) {
-        const imgElement = document.createElement('img');
-        imgElement.src = playerTwo.miniAvatar;
-        imgElement.classList.add('player2', 'avatar-board-img');
-        gridSquares[i].appendChild(imgElement);
-      }
-    }
-    for (let i = 0; i < gridSquares.length; i += 1) {
-      if (i === weaponSquares[0]) {
-        const imgElement = document.createElement('img');
-        imgElement.style.width = '25px';
-        imgElement.src = availableWeapons[0];
-        gridSquares[i].appendChild(imgElement);
-      }
-      if (i === weaponSquares[1]) {
-        const imgElement = document.createElement('img');
-        imgElement.style.width = '25px';
-        imgElement.src = availableWeapons[1];
-        gridSquares[i].appendChild(imgElement);
-      }
-      if (i === weaponSquares[2]) {
-        const imgElement = document.createElement('img');
-        imgElement.style.width = '25px';
-        imgElement.src = availableWeapons[2];
-        gridSquares[i].appendChild(imgElement);
-      }
-      if (i === weaponSquares[3]) {
-        const imgElement = document.createElement('img');
-        imgElement.style.width = '25px';
-        imgElement.src = availableWeapons[3];
-        gridSquares[i].appendChild(imgElement);
-      }
-      // break;
-    }
-    console.log(playerOne);
-    console.log(playerTwo);
+    );
+
+    console.log(players[0]);
+    console.log(players[1]);
     // append to dom
     document.querySelector('.game-board').appendChild(boardFragment);
   });
 }
+
+function setupInactiveSquares(nodeList, inactiveSquares) {
+  for (let i = 0; i < nodeList.length; i += 1) {
+    if (inactiveSquares.includes(i)) {
+      nodeList[i].classList.add('inactive');
+    }
+  }
+}
+
+function setupBoardItem(
+  nodeList,
+  positionsArray,
+  itemArray,
+  classAttributes = [],
+  createId
+) {
+  for (let i = 0; i < nodeList.length; i += 1) {
+    for (let j = 0; j < positionsArray.length; j += 1) {
+      if (i === positionsArray[j]) {
+        const imgElement = document.createElement('img');
+        imgElement.src = itemArray[j].miniImgUrl;
+        imgElement.id = createId(j);
+        imgElement.classList.add(...classAttributes);
+        nodeList[i].appendChild(imgElement);
+      }
+    }
+  }
+}
+
 function clearScreen() {
   document.querySelector('.landing-container').classList.add('hide');
   document.querySelector('.game-container').classList.remove('hide');
@@ -136,14 +144,14 @@ function getPlayerDetails() {
   const playerOne = new Player(
     playerOneName,
     playerOneAvatarDetails.avatarId,
-    playerOneAvatarDetails.mainAvatar,
-    playerOneAvatarDetails.miniAvatar
+    playerOneAvatarDetails.mainImgUrl,
+    playerOneAvatarDetails.miniImgUrl
   );
   const playerTwo = new Player(
     playerTwoName,
     playerTwoAvatarDetails.avatarId,
-    playerTwoAvatarDetails.mainAvatar,
-    playerTwoAvatarDetails.miniAvatar
+    playerTwoAvatarDetails.mainImgUrl,
+    playerTwoAvatarDetails.miniImgUrl
   );
-  return { playerOne, playerTwo };
+  return [playerOne, playerTwo];
 }

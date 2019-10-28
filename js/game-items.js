@@ -117,7 +117,7 @@ const weaponItems = [
     description:
       'Used during the Great War of Ages, these boots gives an extra "oomph" to your attacks for a 12 point attack damage',
     weaponUrl: 'assets/img/items/weapons/steel-boots.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/steel-boots-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/steel-boots-mini.png',
     damage: 12,
     default: false
   },
@@ -127,7 +127,7 @@ const weaponItems = [
     description:
       'The elemental weapon of frost giants. With this you your attack points increase to 14',
     weaponUrl: 'assets/img/items/weapons/ice.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/ice-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/ice-mini.png',
     damage: 14,
     default: false
   },
@@ -137,7 +137,7 @@ const weaponItems = [
     description:
       'Able to cut through almost anything, use this weapon for a 16 point damage',
     weaponUrl: 'assets/img/items/weapons/ice-sword.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/ice-sword-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/ice-sword-mini.png',
     damage: 16,
     default: false
   },
@@ -147,7 +147,7 @@ const weaponItems = [
     description:
       'Only the most gifted combatants can use this combination to dish out a total damage of 20 points',
     weaponUrl: 'assets/img/items/weapons/ice-fire.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/ice-fire-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/ice-fire-mini.png',
     damage: 20,
     default: false
   },
@@ -157,7 +157,7 @@ const weaponItems = [
     description:
       'Satisfy your hunger, increase your calorie intake and increase the damage you inflict to 12',
     weaponUrl: 'assets/img/items/weapons/grapes.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/grapes-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/grapes-mini.png',
     damage: 12,
     default: false
   },
@@ -167,7 +167,7 @@ const weaponItems = [
     description:
       'Light your paths, roast your beef and burn your opponents up to a 14 point damage',
     weaponUrl: 'assets/img/items/weapons/flame.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/flame-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/flame-mini.png',
     damage: 14,
     default: false
   },
@@ -177,7 +177,7 @@ const weaponItems = [
     description:
       'The bane of the dark ghouls. Each strike would take away 16 points from your opponent',
     weaponUrl: 'assets/img/items/weapons/flame-sword.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/flame-sword-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/flame-sword-mini.png',
     damage: 16,
     default: false
   },
@@ -187,7 +187,7 @@ const weaponItems = [
     description:
       'Left or right, this ax strikes out 12 points from your opponent',
     weaponUrl: 'assets/img/items/weapons/dual-ax.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/dual-ax-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/dual-ax-mini.png',
     damage: 12,
     default: false
   },
@@ -197,7 +197,7 @@ const weaponItems = [
     description:
       'Tasty for you, trouble for your opponents. This gives you enough energy to dish out an 11 point damage',
     weaponUrl: 'assets/img/items/weapons/drumsticks.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/drumsticks-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/drumsticks-mini.png',
     damage: 11,
     default: false
   },
@@ -207,7 +207,7 @@ const weaponItems = [
     description:
       'Nothing in all of known creation is immune to the 18 point damage this weapon inflicts',
     weaponUrl: 'assets/img/items/weapons/dragon-glass-spear.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/dragon-glass-spear-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/dragon-glass-spear-mini.png',
     damage: 18,
     default: false
   },
@@ -217,7 +217,7 @@ const weaponItems = [
     description:
       'Food for the Gods and all wise men. Your strength increase for you to inflict a 12 point damage',
     weaponUrl: 'assets/img/items/weapons/cheese.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/cheese-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/cheese-mini.png',
     damage: 12,
     default: false
   },
@@ -227,7 +227,7 @@ const weaponItems = [
     description:
       'Also known as the unbreakable. It can deal a significant 14 point damage',
     weaponUrl: 'assets/img/items/weapons/blue-blade.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/blue-blade-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/blue-blade-mini.png',
     damage: 14,
     default: false
   },
@@ -237,7 +237,7 @@ const weaponItems = [
     description:
       'A basic weapon, but gets the job done with the ability to strike for a 10 point damage',
     weaponUrl: 'assets/img/items/weapons/ax.png',
-    miniWeaponUrl: 'assets/img/items/weapons-mini/ax-mini.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/ax-mini.png',
     damage: 10,
     default: true
   }
@@ -259,4 +259,4 @@ export const inputId = imgSrc.map(img => {
 
 export const weapons = weaponItems
   .filter(weapon => weapon.default === false)
-  .map(weapon => weapon.miniWeaponUrl);
+  .map(weapon => weapon);
