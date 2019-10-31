@@ -3,6 +3,7 @@ import { imgSrc } from './game-items.js';
 import { inputId } from './game-items.js';
 import { avatars } from './game-items.js';
 import { startGame } from './game-events.js';
+// import { addMovements } from './game-events.js';
 import * as utils from './game-utilities.js';
 
 // console.log(inputId);
@@ -17,10 +18,3 @@ domNodes.avatarImgs.forEach((img, index) => {
 });
 
 startGame();
-
-let x = document.querySelector('.player1');
-x.addEventListener('keyup', event => {
-  if (event.keyCode == 38) {
-    x.style.backgroundColor = 'black';
-  }
-});

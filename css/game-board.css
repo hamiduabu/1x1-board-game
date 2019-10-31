@@ -59,6 +59,10 @@ header h1 {
   width: 25px;
 }
 
+.available-square {
+  background-color: #90ee90;
+}
+
 .player-box-1 {
   background-color: rebeccapurple;
   /* grid-row: span 10; */
@@ -97,4 +101,19 @@ header h1 {
 
 section.active-player {
   background: #5a5;
+}
+
+.error-msg {
+  background-color: #f86464;
+  color: #8b0000;
+  border: 1px solid #444;
+  border-radius: 10px;
+  text-align: center;
+  margin: auto;
+  width: 400px;
+}
+
+.invisible {
+  opacity: 0;
+  transition: 1000ms;
 }
