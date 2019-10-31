@@ -29,6 +29,8 @@ export class Board {
   }
   createGrid() {
     const documentFragment = document.createDocumentFragment();
+    const gameBoard = document.createElement('section');
+    gameBoard.classList.add('game-board');
     for (let i = 0; i < this.grids; i += 1) {
       const parentSection = document.createElement(this.element);
       parentSection.classList.add('outer-box');
@@ -37,7 +39,8 @@ export class Board {
         childSection.classList.add('inner-box');
         parentSection.appendChild(childSection);
       }
-      documentFragment.appendChild(parentSection);
+      gameBoard.appendChild(parentSection);
+      documentFragment.appendChild(gameBoard);
     }
     return documentFragment;
   }
