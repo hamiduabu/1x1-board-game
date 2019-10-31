@@ -1,4 +1,7 @@
 export const domNodes = {
+  landingPage: document.querySelector('.landing-container'),
+  gameContainer: document.querySelector('.game-container'),
+  modalCloseBtn: document.querySelector('.close-btn a'),
   avatarImgs: document.querySelectorAll('.avatar-options img'),
   playerOneNameInput: document.querySelector('#player-one'),
   playerTwoNameInput: document.querySelector('#player-two'),
@@ -16,5 +19,10 @@ export const domNodes = {
     setTimeout(() => {
       this.errorMsg.classList.add('invisible');
     }, 1000);
+  },
+  clearScreen: function() {
+    this.landingPage.classList.add('hide');
+    this.gameContainer.classList.remove('hide');
+    this.modalCloseBtn.click();
   }
 };

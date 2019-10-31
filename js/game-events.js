@@ -5,16 +5,12 @@ import { weapons } from './game-items.js';
 import { Player } from './game-prototypes.js';
 import { Board } from './game-prototypes.js';
 
-document.addEventListener('keydown', event => {
-  // key pressed
-  // if(event.keyCode == 37){console.log(event)}
-});
-
 // Modal events
 export function startGame() {
   domNodes.startGameBtn.addEventListener('click', () => {
     console.log('Starting ...');
-    //Get player details using destructuring
+    //Get player details
+    // Consider using destructuring below
     // const [playerOne, playerTwo] = getPlayerDetails();
     const players = getPlayerDetails();
 
@@ -22,23 +18,23 @@ export function startGame() {
     domNodes.playerInputForm.reset();
 
     // Hide landing page and modal
-    clearScreen();
+    domNodes.clearScreen();
 
     // create game board
-    const gameBoard = new Board();
+    const board = new Board();
 
     // Create Grid
-    const boardFragment = gameBoard.createGrid();
-    const gridSquares = boardFragment.querySelectorAll('.inner-box');
+    const boardFragment = board.createGrid();
+    const gridCells = boardFragment.querySelectorAll('.inner-box');
 
     // Get four(4) random weapons
     const availableWeapons = utils.generateUniqueRandomItems(weapons, 4);
-    console.log(availableWeapons);
+    /* console.log(availableWeapons); */
 
     // Get index numbers for 10 Inactive squares
     const inactiveArea = utils.generateUniqueRandomNumbers(
       0,
-      gridSquares.length,
+      gridCells.length,
       10
     );
 
@@ -55,8 +51,8 @@ export function startGame() {
     ]);
     const playersPosition = [...playerOnePosition, ...playerTwoPosition];
 
-    console.log(playersPosition);
-    console.log(inactiveArea);
+    /* console.log(playersPosition);
+    console.log(inactiveArea); */
 
     // Weapon Squares
 
@@ -64,14 +60,14 @@ export function startGame() {
       ...inactiveArea,
       ...playersPosition
     ]);
-    console.log(weaponSquares);
+    /*  console.log(weaponSquares); */
 
     // Setup inactive squares
-    setupInactiveSquares(gridSquares, inactiveArea);
+    setupInactiveSquares(gridCells, inactiveArea);
 
     // Setup Players on board
     setupBoardItem(
-      gridSquares,
+      gridCells,
       playersPosition,
       players,
       ['avatar-board-img'],
@@ -80,7 +76,7 @@ export function startGame() {
 
     // Setup Weapons on board
     setupBoardItem(
-      gridSquares,
+      gridCells,
       weaponSquares,
       availableWeapons,
       ['weapon-board-img'],
@@ -88,17 +84,41 @@ export function startGame() {
         return `weapon${availableWeapons[idx].id}`;
       }
     );
+    const player1 = boardFragment.querySelector('#player1');
+    const player2 = boardFragment.querySelector('#player2');
+    const playerTurn = player1;
+    const nextPlayer = player1;
+    playerTurn.classList.add('active-player');
 
-    console.log(players[0]);
-    console.log(players[1]);
+    const availableSquares = [
+      ...saveAvailableSquaresRight(playerTurn),
+      ...saveAvailableSquaresLeft(playerTurn),
+      ...saveAvailableSquaresDown(playerTurn),
+      ...saveAvailableSquaresTop(playerTurn)
+    ];
+    // console.log('ONE' + ' : ' + availableSquares);
+    highlightAvailableSquares(availableSquares);
+    // Add movements
+    addMovements(playerTurn, nextPlayer, player1, player2, availableSquares);
+    // console.log('TWO' + ' : ' + availableSquares);
+
+    /* highlightNewAvailableSquares(
+      player1,
+      player2,
+      playerTurn,
+      availableSquares
+    ); */
+    // console.log('THREE' + ' : ' + availableSquares);
+
+    /* console.log(players[0]);
+    console.log(players[1]); */
+
     // append to dom
-    document.querySelector('.game-board').appendChild(boardFragment);
+    document.querySelector('.game-board-container').appendChild(boardFragment);
   });
-
-  // Add movements
-  addMovements();
 }
 
+// Setup inactive squares
 function setupInactiveSquares(nodeList, inactiveSquares) {
   for (let i = 0; i < nodeList.length; i += 1) {
     if (inactiveSquares.includes(i)) {
@@ -107,6 +127,7 @@ function setupInactiveSquares(nodeList, inactiveSquares) {
   }
 }
 
+// Setup board items (players and weapons)
 function setupBoardItem(
   nodeList,
   positionsArray,
@@ -125,12 +146,6 @@ function setupBoardItem(
       }
     }
   }
-}
-
-function clearScreen() {
-  document.querySelector('.landing-container').classList.add('hide');
-  document.querySelector('.game-container').classList.remove('hide');
-  document.querySelector('.close-btn a').click();
 }
 
 function getPlayerDetails() {
@@ -160,42 +175,80 @@ function getPlayerDetails() {
 }
 
 // Movements
-function addMovements() {
+function addMovements(
+  playerTurn,
+  nextPlayer,
+  player1,
+  player2,
+  availableSquares
+) {
   let numberOfTurns = 0;
 
-  document.addEventListener('keyup', function(event) {
-    const playerAvatar1 = document.querySelector('#player1');
-    const playerAvatar2 = document.querySelector('#player2');
-    let playerTurn = playerAvatar1;
+  document.addEventListener('keydown', function(event) {
+    event.preventDefault();
+    // const player1 = document.querySelector('#player1');
+    // const player2 = document.querySelector('#player2');
+    // let playerTurn = playerAvatar1;
+    // console.log('TWO - BEFORE' + ' : ' + availableSquares);
+    for (const square of availableSquares) {
+      square.classList.remove('available-move');
+    }
+    availableSquares = [];
 
+    // console.log('TWO -AFTER' + ' : ' + availableSquares);
     return (function() {
+      if (numberOfTurns >= 2 && numberOfTurns < 5) {
+        nextPlayer = player2;
+        // playerTurn.classList.remove('active-player');
+        // nextPlayer.classList.add('active-player');
+      }
       if (numberOfTurns >= 3) {
-        playerTurn = playerAvatar2;
+        playerTurn = player2;
+      }
+      if (numberOfTurns >= 5 || numberOfTurns < 2) {
+        nextPlayer = player1;
+        // nextPlayer.classList.remove('active-player');
+        // playerTurn.classList.add('active-player');
       }
       if (numberOfTurns === 6) {
-        playerTurn = playerAvatar1;
+        playerTurn = player1;
         numberOfTurns = 0;
       }
 
       if (event.code === 'ArrowUp') {
         const topSquare =
-          playerTurn.parentElement.parentElement.previousElementSibling
-            .children[getPresentPositionIndex(playerTurn)];
-        if (!topSquare || topSquare.classList.contains('inactive')) {
+          playerTurn.parentElement.parentElement.previousElementSibling;
+        if (!topSquare) {
           return domNodes.toggleError();
         }
-        topSquare.appendChild(playerTurn);
+        if (
+          topSquare.children[
+            getElementPresentPositionIndex(playerTurn)
+          ].classList.contains('inactive')
+        ) {
+          return domNodes.toggleError();
+        }
+        topSquare.children[
+          getElementPresentPositionIndex(playerTurn)
+        ].appendChild(playerTurn);
         numberOfTurns += 1;
       }
       if (event.code === 'ArrowDown') {
         const bottomSquare =
-          playerTurn.parentElement.parentElement.nextElementSibling.children[
-            getPresentPositionIndex(playerTurn)
-          ];
-        if (!bottomSquare || bottomSquare.classList.contains('inactive')) {
+          playerTurn.parentElement.parentElement.nextElementSibling;
+        if (!bottomSquare) {
           return domNodes.toggleError();
         }
-        bottomSquare.appendChild(playerTurn);
+        if (
+          bottomSquare.children[
+            getElementPresentPositionIndex(playerTurn)
+          ].classList.contains('inactive')
+        ) {
+          return domNodes.toggleError();
+        }
+        bottomSquare.children[
+          getElementPresentPositionIndex(playerTurn)
+        ].appendChild(playerTurn);
         numberOfTurns += 1;
       }
       if (event.code === 'ArrowLeft') {
@@ -216,16 +269,164 @@ function addMovements() {
       }
     })();
   });
+  // setTimeout(() => {
+  document.addEventListener('keyup', function(event) {
+    // console.log(playerTurn);
+    // console.log(numberOfTurns);
+    // console.log(nextPlayer);
+    playerTurn.classList.remove('active-player');
+    nextPlayer.classList.add('active-player');
+    availableSquares = [
+      ...saveAvailableSquaresTop(nextPlayer),
+      ...saveAvailableSquaresDown(nextPlayer),
+      ...saveAvailableSquaresRight(nextPlayer),
+      ...saveAvailableSquaresLeft(nextPlayer)
+    ];
+    highlightAvailableSquares(availableSquares);
+  });
+  // }, 1);
 }
 
-function getPresentPositionIndex(p1) {
-  // const <player-img> = document.querySelector('<player-img-selector>')
-  const row = p1.parentElement.parentElement.children;
+function getElementPresentPositionIndex(element) {
+  const row = element.parentElement.parentElement.children;
   let positionIndex;
   for (const item of row) {
-    if (item.firstElementChild === p1) {
+    if (Array.from(item.children).includes(element)) {
       positionIndex = Array.from(row).indexOf(item);
     }
   }
   return positionIndex;
 }
+
+function saveAvailableSquaresRight(player) {
+  const availableMovesRight = [];
+  const presentPosition = getElementPresentPositionIndex(player);
+  const parentElement = player.parentElement.parentElement;
+  for (let i = presentPosition + 1; i <= presentPosition + 3; i += 1) {
+    if (i === parentElement.childElementCount) {
+      return availableMovesRight;
+    }
+    if (parentElement.children[i].classList.contains('inactive')) {
+      break;
+    } else {
+      availableMovesRight.push(parentElement.children[i]);
+    }
+  }
+  return availableMovesRight;
+}
+
+function saveAvailableSquaresLeft(player) {
+  const availableMovesLeft = [];
+  const presentPosition = getElementPresentPositionIndex(player);
+  const parentElement = player.parentElement.parentElement;
+  for (let i = presentPosition - 1; i >= presentPosition - 3; i -= 1) {
+    if (i < 0) {
+      return availableMovesLeft;
+    }
+    if (parentElement.children[i].classList.contains('inactive')) {
+      break;
+    } else {
+      availableMovesLeft.push(parentElement.children[i]);
+    }
+  }
+  return availableMovesLeft;
+}
+
+function saveAvailableSquaresDown(player) {
+  const availableMovesDown = [];
+  const playerParent = player.parentElement;
+  const playerPosition = getElementPresentPositionIndex(player);
+  const parentPosition = getElementPresentPositionIndex(playerParent);
+  for (let i = parentPosition + 1; i <= parentPosition + 3; i += 1) {
+    if (i === playerParent.parentElement.parentElement.childElementCount) {
+      return availableMovesDown;
+    }
+    if (
+      playerParent.parentElement.parentElement.children[i].children[
+        playerPosition
+      ].classList.contains('inactive')
+    ) {
+      break;
+    } else {
+      availableMovesDown.push(
+        playerParent.parentElement.parentElement.children[i].children[
+          playerPosition
+        ]
+      );
+    }
+  }
+  return availableMovesDown;
+}
+
+function saveAvailableSquaresTop(player) {
+  const availableMovesTop = [];
+  const playerParent = player.parentElement;
+  const playerPosition = getElementPresentPositionIndex(player);
+  const parentPosition = getElementPresentPositionIndex(playerParent);
+  for (let i = parentPosition - 1; i >= parentPosition - 3; i -= 1) {
+    if (i < 0) {
+      return availableMovesTop;
+    }
+    if (
+      playerParent.parentElement.parentElement.children[i].children[
+        playerPosition
+      ].classList.contains('inactive')
+    ) {
+      break;
+    } else {
+      availableMovesTop.push(
+        playerParent.parentElement.parentElement.children[i].children[
+          playerPosition
+        ]
+      );
+    }
+  }
+  return availableMovesTop;
+}
+
+function highlightAvailableSquares(squares) {
+  if (squares.length <= 0) {
+    return;
+  }
+  for (const square of squares) {
+    square.classList.add('available-move');
+  }
+}
+
+/* function highlightNewAvailableSquares(
+  player1,
+  player2,
+  playerTurn,
+  availableSquares
+) {
+  let numberOfTurns = 0;
+  document.addEventListener('keyup', function(event) {
+    return (function() {
+      if (numberOfTurns >= 3) {
+        playerTurn = player2;
+      }
+      if (numberOfTurns === 6) {
+        playerTurn = player1;
+        numberOfTurns = 0;
+      }
+      const movementKeys = ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'];
+      if (movementKeys.includes(event.code)) {
+        event.preventDefault();
+        numberOfTurns += 1;
+        for (const square of availableSquares) {
+          square.classList.remove('available-move');
+
+          console.log(numberOfTurns);
+        }
+        availableSquares = [
+          ...saveAvailableSquaresTop(playerTurn),
+          ...saveAvailableSquaresDown(playerTurn),
+          ...saveAvailableSquaresRight(playerTurn),
+          ...saveAvailableSquaresLeft(playerTurn)
+        ];
+        highlightAvailableSquares(availableSquares);
+        // console.log('THREE' + ' : ' + availableSquares);
+      }
+    })();
+  });
+} */
