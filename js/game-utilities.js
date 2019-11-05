@@ -1,4 +1,5 @@
-import { domNodes } from './dom-variables.js';
+import { domNode1 } from './dom-variables.js';
+import * as item from './game-items.js';
 
 export function generateElement(element) {
   return document.createElement(element);
@@ -27,7 +28,7 @@ export function shuffle(arr) {
   return shuffledArray;
 }
 
-function extractNumbers(str) {
+export function extractNumbers(str) {
   let numString = '';
   for (const char of str) {
     if (Number(char) % 1 === 0) {
@@ -102,4 +103,74 @@ export function generateUniqueRandomNumbers(
   }
 
   return generatedNumbers;
+}
+
+export function getAvailablePlayerStartPositions() {
+  const playerOnePositions = [];
+  for (let i = 0; i < 45; i += 1) {
+    playerOnePositions.push(i);
+    if (playerOnePositions.length % 5 === 0) {
+      i += 5;
+    }
+  }
+
+  const playerTwoPositions = [];
+  for (let i = 55; i < 100; i += 1) {
+    playerTwoPositions.push(i);
+    if (playerTwoPositions.length % 5 === 0) {
+      i += 5;
+    }
+  }
+  return { playerOnePositions, playerTwoPositions };
+}
+
+export function getElementPresentPositionIndex(element) {
+  const row = element.parentElement.parentElement.children;
+  let positionIndex;
+  for (const item of row) {
+    if (Array.from(item.children).includes(element)) {
+      positionIndex = Array.from(row).indexOf(item);
+    }
+  }
+  return positionIndex;
+}
+
+export function highlightAvailableSquares(squares) {
+  if (squares.length <= 0) {
+    return;
+  }
+  for (const square of squares) {
+    square.classList.add('available-move');
+  }
+}
+
+export function updatePlayerWeapon(
+  player,
+  weaponCache = item.defaultWeapon,
+  id = 13
+) {
+  const weaponProperty = {};
+  for (const weapon of weaponCache) {
+    if (weapon.id === id) {
+      weaponProperty.image = weapon.weaponUrl;
+      weaponProperty.name = weapon.name;
+      weaponProperty.description = weapon.description;
+      weaponProperty.damage = weapon.damage;
+      player.weaponId = id;
+    }
+  }
+  return weaponProperty;
+}
+
+export function manageTurns(num) {
+  if (num === 3 || num === 6) {
+    num = 0;
+  }
+  if (num === 4) {
+    num = 1;
+  }
+  if (num === 5) {
+    num = 2;
+  }
+  return num;
 }

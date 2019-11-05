@@ -1,24 +1,25 @@
-import { domNodes } from './dom-variables.js';
+import { domNode1 } from './dom-variables.js';
+import { domNode2 } from './dom-variables.js';
 import * as utils from './game-utilities.js';
-import { avatars } from './game-items.js';
-import { weapons } from './game-items.js';
+import * as item from './game-items.js';
 import { Player } from './game-prototypes.js';
 import { Board } from './game-prototypes.js';
 
 // Modal events
 export function startGame() {
-  domNodes.startGameBtn.addEventListener('click', () => {
+  domNode1.startGameBtn.addEventListener('click', () => {
     console.log('Starting ...');
     //Get player details
     // Consider using destructuring below
     // const [playerOne, playerTwo] = getPlayerDetails();
     const players = getPlayerDetails();
+    const [playerOne, playerTwo] = players;
 
     // Reset Modal Form
-    domNodes.playerInputForm.reset();
+    domNode1.playerInputForm.reset();
 
     // Hide landing page and modal
-    domNodes.clearScreen();
+    domNode1.clearScreen();
 
     // create game board
     const board = new Board();
@@ -28,8 +29,7 @@ export function startGame() {
     const gridCells = boardFragment.querySelectorAll('.inner-box');
 
     // Get four(4) random weapons
-    const availableWeapons = utils.generateUniqueRandomItems(weapons, 4);
-    /* console.log(availableWeapons); */
+    const availableWeapons = utils.generateUniqueRandomItems(item.weapons, 4);
 
     // Get index numbers for 10 Inactive squares
     const inactiveArea = utils.generateUniqueRandomNumbers(
@@ -39,28 +39,35 @@ export function startGame() {
     );
 
     // Get index number to position players
-    const playerOnePosition = utils.generateUniqueRandomNumbers(
+    const unavailablePlayerOnePositions = utils.generateUniqueRandomNumbers(
       0,
       45,
-      1,
-      inactiveArea
+      20,
+      utils.getAvailablePlayerStartPositions().playerOnePositions
     );
-    const playerTwoPosition = utils.generateUniqueRandomNumbers(56, 100, 1, [
+
+    const unavailablePlayerTwoPositions = utils.generateUniqueRandomNumbers(
+      55,
+      100,
+      20,
+      utils.getAvailablePlayerStartPositions().playerTwoPositions
+    );
+
+    const playerOnePosition = utils.generateUniqueRandomNumbers(0, 45, 1, [
       ...inactiveArea,
-      ...playerOnePosition
+      ...unavailablePlayerOnePositions
+    ]);
+    const playerTwoPosition = utils.generateUniqueRandomNumbers(55, 100, 1, [
+      ...inactiveArea,
+      ...unavailablePlayerTwoPositions
     ]);
     const playersPosition = [...playerOnePosition, ...playerTwoPosition];
 
-    /* console.log(playersPosition);
-    console.log(inactiveArea); */
-
     // Weapon Squares
-
     const weaponSquares = utils.generateUniqueRandomNumbers(0, 100, 4, [
       ...inactiveArea,
       ...playersPosition
     ]);
-    /*  console.log(weaponSquares); */
 
     // Setup inactive squares
     setupInactiveSquares(gridCells, inactiveArea);
@@ -84,38 +91,83 @@ export function startGame() {
         return `weapon${availableWeapons[idx].id}`;
       }
     );
-    const player1 = boardFragment.querySelector('#player1');
-    const player2 = boardFragment.querySelector('#player2');
-    const playerTurn = player1;
-    const nextPlayer = player1;
-    playerTurn.classList.add('active-player');
 
-    const availableSquares = [
-      ...saveAvailableSquaresRight(playerTurn),
-      ...saveAvailableSquaresLeft(playerTurn),
-      ...saveAvailableSquaresDown(playerTurn),
-      ...saveAvailableSquaresTop(playerTurn)
-    ];
-    // console.log('ONE' + ' : ' + availableSquares);
-    highlightAvailableSquares(availableSquares);
-    // Add movements
-    addMovements(playerTurn, nextPlayer, player1, player2, availableSquares);
-    // console.log('TWO' + ' : ' + availableSquares);
-
-    /* highlightNewAvailableSquares(
-      player1,
-      player2,
+    // Highlight initial active player
+    const {
+      availableSquares,
       playerTurn,
-      availableSquares
-    ); */
-    // console.log('THREE' + ' : ' + availableSquares);
+      player1,
+      player2
+    } = setInitialActiveSquares(boardFragment);
+    utils.highlightAvailableSquares(availableSquares);
 
-    /* console.log(players[0]);
-    console.log(players[1]); */
+    // Add movements
+    manageMovements(players, playerTurn, player1, player2, availableSquares, [
+      ...item.defaultWeapon,
+      ...availableWeapons
+    ]);
+
+    // Display Heading
+    const combatants = document.querySelector('#combatants');
+    combatants.textContent = `${playerOne.name} VS ${playerTwo.name}`;
+
+    // Player Boxes
+
+    // Display player Stats
+
+    // Player Avatar and name
+
+    domNode2.playerBoxOneImg.src = playerOne.mainImgUrl;
+    domNode2.playerBoxTwoImg.src = playerTwo.mainImgUrl;
+
+    domNode2.playerBoxOneName.textContent = `${playerOne.name}`;
+    domNode2.playerBoxTwoName.textContent = `${playerTwo.name}`;
+
+    // Health Points
+
+    domNode2.playerOneHpValue.textContent = '100';
+    domNode2.playerTwoHpValue.textContent = '100';
+
+    [
+      domNode2.playerOneWeaponImg.src,
+      domNode2.playerOneWeaponName.textContent,
+      domNode2.playerOneWeaponDesc.textContent,
+      domNode2.playerOneWeaponAp.textContent
+    ] = Object.values(utils.updatePlayerWeapon(playerOne));
+
+    [
+      domNode2.playerTwoWeaponImg.src,
+      domNode2.playerTwoWeaponName.textContent,
+      domNode2.playerTwoWeaponDesc.textContent,
+      domNode2.playerTwoWeaponAp.textContent
+    ] = Object.values(utils.updatePlayerWeapon(playerTwo));
 
     // append to dom
     document.querySelector('.game-board-container').appendChild(boardFragment);
+
+    const boxOneFragment = document.createDocumentFragment();
+
+    // console.log(playerTwo);
+    // console.log(playerOne);
   });
+}
+
+/*
+ ***
+ */
+
+function setInitialActiveSquares(domObject) {
+  const player1 = domObject.querySelector('#player1');
+  const player2 = domObject.querySelector('#player2');
+  const playerTurn = player1;
+  playerTurn.classList.add('active-player');
+  const availableSquares = [
+    ...saveAvailableSquaresRight(playerTurn),
+    ...saveAvailableSquaresLeft(playerTurn),
+    ...saveAvailableSquaresDown(playerTurn),
+    ...saveAvailableSquaresTop(playerTurn)
+  ];
+  return { availableSquares, playerTurn, player1, player2 };
 }
 
 // Setup inactive squares
@@ -148,16 +200,17 @@ function setupBoardItem(
   }
 }
 
+// Get players details from Modal Dialog Form
 function getPlayerDetails() {
-  const playerOneName = utils.getPlayerName(domNodes.playerOneNameInput);
+  const playerOneName = utils.getPlayerName(domNode1.playerOneNameInput);
   const playerOneAvatarDetails = utils.getPlayerAvatarDetails(
-    domNodes.playerOneAvatarSelect(),
-    avatars
+    domNode1.playerOneAvatarSelect(),
+    item.avatars
   );
-  const playerTwoName = utils.getPlayerName(domNodes.playerTwoNameInput);
+  const playerTwoName = utils.getPlayerName(domNode1.playerTwoNameInput);
   const playerTwoAvatarDetails = utils.getPlayerAvatarDetails(
-    domNodes.playerTwoAvatarSelect(),
-    avatars
+    domNode1.playerTwoAvatarSelect(),
+    item.avatars
   );
   const playerOne = new Player(
     playerOneName,
@@ -175,61 +228,48 @@ function getPlayerDetails() {
 }
 
 // Movements
-function addMovements(
+function manageMovements(
+  players,
   playerTurn,
-  nextPlayer,
   player1,
   player2,
-  availableSquares
+  availableSquares,
+  weapons
 ) {
   let numberOfTurns = 0;
 
   document.addEventListener('keydown', function(event) {
-    event.preventDefault();
-    // const player1 = document.querySelector('#player1');
-    // const player2 = document.querySelector('#player2');
-    // let playerTurn = playerAvatar1;
-    // console.log('TWO - BEFORE' + ' : ' + availableSquares);
+    const allowedKeys = [
+      'ArrowUp',
+      'ArrowDown',
+      'ArrowRight',
+      'ArrowLeft',
+      'Space'
+    ];
+    if (!allowedKeys.includes(event.key)) {
+      return event.preventDefault();
+    }
     for (const square of availableSquares) {
       square.classList.remove('available-move');
     }
     availableSquares = [];
 
-    // console.log('TWO -AFTER' + ' : ' + availableSquares);
     return (function() {
-      if (numberOfTurns >= 2 && numberOfTurns < 5) {
-        nextPlayer = player2;
-        // playerTurn.classList.remove('active-player');
-        // nextPlayer.classList.add('active-player');
-      }
-      if (numberOfTurns >= 3) {
-        playerTurn = player2;
-      }
-      if (numberOfTurns >= 5 || numberOfTurns < 2) {
-        nextPlayer = player1;
-        // nextPlayer.classList.remove('active-player');
-        // playerTurn.classList.add('active-player');
-      }
-      if (numberOfTurns === 6) {
-        playerTurn = player1;
-        numberOfTurns = 0;
-      }
-
       if (event.code === 'ArrowUp') {
         const topSquare =
           playerTurn.parentElement.parentElement.previousElementSibling;
         if (!topSquare) {
-          return domNodes.toggleError();
+          return domNode1.toggleError();
         }
         if (
           topSquare.children[
-            getElementPresentPositionIndex(playerTurn)
+            utils.getElementPresentPositionIndex(playerTurn)
           ].classList.contains('inactive')
         ) {
-          return domNodes.toggleError();
+          return domNode1.toggleError();
         }
         topSquare.children[
-          getElementPresentPositionIndex(playerTurn)
+          utils.getElementPresentPositionIndex(playerTurn)
         ].appendChild(playerTurn);
         numberOfTurns += 1;
       }
@@ -237,24 +277,24 @@ function addMovements(
         const bottomSquare =
           playerTurn.parentElement.parentElement.nextElementSibling;
         if (!bottomSquare) {
-          return domNodes.toggleError();
+          return domNode1.toggleError();
         }
         if (
           bottomSquare.children[
-            getElementPresentPositionIndex(playerTurn)
+            utils.getElementPresentPositionIndex(playerTurn)
           ].classList.contains('inactive')
         ) {
-          return domNodes.toggleError();
+          return domNode1.toggleError();
         }
         bottomSquare.children[
-          getElementPresentPositionIndex(playerTurn)
+          utils.getElementPresentPositionIndex(playerTurn)
         ].appendChild(playerTurn);
         numberOfTurns += 1;
       }
       if (event.code === 'ArrowLeft') {
         const leftSquare = playerTurn.parentElement.previousElementSibling;
         if (!leftSquare || leftSquare.classList.contains('inactive')) {
-          return domNodes.toggleError();
+          return domNode1.toggleError();
         }
         leftSquare.appendChild(playerTurn);
         numberOfTurns += 1;
@@ -262,47 +302,126 @@ function addMovements(
       if (event.code === 'ArrowRight') {
         const rightSquare = playerTurn.parentElement.nextElementSibling;
         if (!rightSquare || rightSquare.classList.contains('inactive')) {
-          return domNodes.toggleError();
+          return domNode1.toggleError();
         }
         rightSquare.appendChild(playerTurn);
         numberOfTurns += 1;
       }
+      if (numberOfTurns === 3) {
+        playerTurn.classList.remove('active-player');
+        playerTurn = player2;
+        playerTurn.classList.add('active-player');
+      }
+
+      if (numberOfTurns >= 3 && numberOfTurns <= 6) {
+        playerTurn = player2;
+      }
+
+      if (numberOfTurns === 6) {
+        playerTurn.classList.remove('active-player');
+        numberOfTurns = 0;
+        playerTurn = player1;
+        playerTurn.classList.add('active-player');
+      }
+
+      // Switch Weapons
+      let presentPlayer;
+      if (numberOfTurns > 0 && numberOfTurns <= 3) {
+        presentPlayer = player1;
+      } else {
+        presentPlayer = player2;
+      }
+      const presentPlayerSquare = presentPlayer.parentElement;
+      if (
+        presentPlayerSquare.firstElementChild.classList.contains(
+          'weapon-board-img'
+        )
+      ) {
+        const newWeaponId = utils.extractNumbers(
+          presentPlayerSquare.firstElementChild.id
+        );
+        const [playerOne, playerTwo] = players;
+        if (presentPlayer === player1) {
+          switchWeapon(
+            playerOne,
+            'playerOne',
+            newWeaponId,
+            weapons,
+            presentPlayerSquare
+          );
+        } else {
+          switchWeapon(
+            playerTwo,
+            'playerTwo',
+            newWeaponId,
+            weapons,
+            presentPlayerSquare
+          );
+        }
+      }
     })();
   });
-  // setTimeout(() => {
+
   document.addEventListener('keyup', function(event) {
-    // console.log(playerTurn);
-    // console.log(numberOfTurns);
-    // console.log(nextPlayer);
-    playerTurn.classList.remove('active-player');
-    nextPlayer.classList.add('active-player');
-    availableSquares = [
-      ...saveAvailableSquaresTop(nextPlayer),
-      ...saveAvailableSquaresDown(nextPlayer),
-      ...saveAvailableSquaresRight(nextPlayer),
-      ...saveAvailableSquaresLeft(nextPlayer)
-    ];
-    highlightAvailableSquares(availableSquares);
-  });
-  // }, 1);
-}
-
-function getElementPresentPositionIndex(element) {
-  const row = element.parentElement.parentElement.children;
-  let positionIndex;
-  for (const item of row) {
-    if (Array.from(item.children).includes(element)) {
-      positionIndex = Array.from(row).indexOf(item);
+    const allowedKeys = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
+    if (!allowedKeys.includes(event.key)) {
+      return event.preventDefault();
     }
-  }
-  return positionIndex;
+    availableSquares = [
+      ...saveAvailableSquaresTop(playerTurn, numberOfTurns),
+      ...saveAvailableSquaresDown(playerTurn, numberOfTurns),
+      ...saveAvailableSquaresRight(playerTurn, numberOfTurns),
+      ...saveAvailableSquaresLeft(playerTurn, numberOfTurns)
+    ];
+    //
+    const adjacentSquares = [
+      saveAvailableSquaresTop(playerTurn)[0],
+      saveAvailableSquaresDown(playerTurn)[0],
+      saveAvailableSquaresRight(playerTurn)[0],
+      saveAvailableSquaresLeft(playerTurn)[0]
+    ];
+
+    const validAdjacentSquares = getValidSquares(adjacentSquares);
+
+    checkForBattleCondition(validAdjacentSquares);
+
+    utils.highlightAvailableSquares(availableSquares);
+  });
 }
 
-function saveAvailableSquaresRight(player) {
-  const availableMovesRight = [];
-  const presentPosition = getElementPresentPositionIndex(player);
-  const parentElement = player.parentElement.parentElement;
-  for (let i = presentPosition + 1; i <= presentPosition + 3; i += 1) {
+function switchWeapon(
+  playerObject,
+  playerString,
+  newWeaponId,
+  weaponsCache,
+  presentPlayerSquare
+) {
+  const currentPlayer = playerObject;
+  const oldWeaponId = playerObject.weaponId;
+  currentPlayer.weaponId = newWeaponId;
+  [
+    domNode2[`${playerString}WeaponImg`].src,
+    domNode2[`${playerString}WeaponName`].textContent,
+    domNode2[`${playerString}WeaponDesc`].textContent,
+    domNode2[`${playerString}WeaponAp`].textContent
+  ] = Object.values(
+    utils.updatePlayerWeapon(currentPlayer, weaponsCache, newWeaponId)
+  );
+  dropOldWeapon(weaponsCache, oldWeaponId, presentPlayerSquare);
+}
+
+// Save Available Squares
+// Right Squares
+function saveAvailableSquaresRight(player, turns = 0) {
+  turns = utils.manageTurns(turns);
+
+  const {
+    presentPosition,
+    availableMoves: availableMovesRight,
+    parentElement
+  } = savePositions(player);
+
+  for (let i = presentPosition + 1; i <= presentPosition + 3 - turns; i += 1) {
     if (i === parentElement.childElementCount) {
       return availableMovesRight;
     }
@@ -315,11 +434,17 @@ function saveAvailableSquaresRight(player) {
   return availableMovesRight;
 }
 
-function saveAvailableSquaresLeft(player) {
-  const availableMovesLeft = [];
-  const presentPosition = getElementPresentPositionIndex(player);
-  const parentElement = player.parentElement.parentElement;
-  for (let i = presentPosition - 1; i >= presentPosition - 3; i -= 1) {
+// Left Squares
+function saveAvailableSquaresLeft(player, turns = 0) {
+  turns = utils.manageTurns(turns);
+
+  const {
+    presentPosition,
+    availableMoves: availableMovesLeft,
+    parentElement
+  } = savePositions(player);
+
+  for (let i = presentPosition - 1; i >= presentPosition - 3 + turns; i -= 1) {
     if (i < 0) {
       return availableMovesLeft;
     }
@@ -332,12 +457,18 @@ function saveAvailableSquaresLeft(player) {
   return availableMovesLeft;
 }
 
-function saveAvailableSquaresDown(player) {
-  const availableMovesDown = [];
-  const playerParent = player.parentElement;
-  const playerPosition = getElementPresentPositionIndex(player);
-  const parentPosition = getElementPresentPositionIndex(playerParent);
-  for (let i = parentPosition + 1; i <= parentPosition + 3; i += 1) {
+// Bottom Squares
+function saveAvailableSquaresDown(player, turns = 0) {
+  turns = utils.manageTurns(turns);
+
+  const {
+    parentPosition,
+    availableMoves: availableMovesDown,
+    playerParent,
+    playerPosition
+  } = savePositions(player);
+
+  for (let i = parentPosition + 1; i <= parentPosition + 3 - turns; i += 1) {
     if (i === playerParent.parentElement.parentElement.childElementCount) {
       return availableMovesDown;
     }
@@ -358,12 +489,18 @@ function saveAvailableSquaresDown(player) {
   return availableMovesDown;
 }
 
-function saveAvailableSquaresTop(player) {
-  const availableMovesTop = [];
-  const playerParent = player.parentElement;
-  const playerPosition = getElementPresentPositionIndex(player);
-  const parentPosition = getElementPresentPositionIndex(playerParent);
-  for (let i = parentPosition - 1; i >= parentPosition - 3; i -= 1) {
+// Top Squares
+function saveAvailableSquaresTop(player, turns = 0) {
+  turns = utils.manageTurns(turns);
+
+  const {
+    parentPosition,
+    availableMoves: availableMovesTop,
+    playerParent,
+    playerPosition
+  } = savePositions(player);
+
+  for (let i = parentPosition - 1; i >= parentPosition - 3 + turns; i -= 1) {
     if (i < 0) {
       return availableMovesTop;
     }
@@ -384,49 +521,50 @@ function saveAvailableSquaresTop(player) {
   return availableMovesTop;
 }
 
-function highlightAvailableSquares(squares) {
-  if (squares.length <= 0) {
-    return;
-  }
-  for (const square of squares) {
-    square.classList.add('available-move');
+// Save positions to be used to get available squares
+function savePositions(player) {
+  const availableMoves = [];
+  const presentPosition = utils.getElementPresentPositionIndex(player);
+  const parentElement = player.parentElement.parentElement;
+  const playerParent = player.parentElement;
+  const playerPosition = utils.getElementPresentPositionIndex(player);
+  const parentPosition = utils.getElementPresentPositionIndex(playerParent);
+  return {
+    parentPosition,
+    availableMoves,
+    playerParent,
+    playerPosition,
+    presentPosition,
+    parentElement
+  };
+}
+
+// Check if players are adjacent each other
+function checkForBattleCondition(validAdjacentSquares) {
+  for (const square of validAdjacentSquares) {
+    if (square.children.player1 || square.children.player2) {
+      alert('Lets Rumble!!!');
+    }
   }
 }
 
-/* function highlightNewAvailableSquares(
-  player1,
-  player2,
-  playerTurn,
-  availableSquares
-) {
-  let numberOfTurns = 0;
-  document.addEventListener('keyup', function(event) {
-    return (function() {
-      if (numberOfTurns >= 3) {
-        playerTurn = player2;
-      }
-      if (numberOfTurns === 6) {
-        playerTurn = player1;
-        numberOfTurns = 0;
-      }
-      const movementKeys = ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'];
-      if (movementKeys.includes(event.code)) {
-        event.preventDefault();
-        numberOfTurns += 1;
-        for (const square of availableSquares) {
-          square.classList.remove('available-move');
+// Get valid active squares
+function getValidSquares(adjacentSquares) {
+  const validAdjacentSquares = [];
+  for (const square of adjacentSquares) {
+    if (square) {
+      validAdjacentSquares.push(square);
+    }
+  }
+  return validAdjacentSquares;
+}
 
-          console.log(numberOfTurns);
-        }
-        availableSquares = [
-          ...saveAvailableSquaresTop(playerTurn),
-          ...saveAvailableSquaresDown(playerTurn),
-          ...saveAvailableSquaresRight(playerTurn),
-          ...saveAvailableSquaresLeft(playerTurn)
-        ];
-        highlightAvailableSquares(availableSquares);
-        // console.log('THREE' + ' : ' + availableSquares);
-      }
-    })();
-  });
-} */
+// Drop old weapon
+function dropOldWeapon(weapons, oldWeaponId, presentPlayerSquare) {
+  for (const weapon of weapons) {
+    if (weapon.id === oldWeaponId) {
+      presentPlayerSquare.firstElementChild.src = weapon.miniImgUrl;
+      presentPlayerSquare.firstElementChild.id = `weapon${oldWeaponId}`;
+    }
+  }
+}
