@@ -1,35 +1,35 @@
-* {
-  box-sizing: border-box;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', Verdana, sans-serif;
-}
-
 header h1 {
   text-align: center;
 }
 
 .game-container {
-  display: flex;
-  justify-content: center;
-  /* border: 1px solid #aaa; */
   width: 100%;
+}
+
+.game-container * {
+  font-family: 'Saira Condensed', 'Lucida Sans', 'Lucida Sans Regular', sans-serif;
+}
+
+.game-header {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0 auto;
+  color: #673ab7;
+  padding-bottom: 10px;
+  font-family: 'Supermercado One', 'Lucida Sans', 'Lucida Sans Regular', sans-serif;
+
 }
 
 .game-area {
   display: flex;
-  /* background-color: #eee;
-  display: grid;
-  grid-template-columns: 2fr 9fr 2fr;
-  grid-template-rows: repeat(10, 3.2rem);
-  text-align: center;
-  width: 70%;
-  margin: 20px auto; */
+  justify-content: center;
 }
 
 .outer-box {
   display: flex;
-  /* background-color: blueviolet; */
   width: 500px;
   margin: auto auto;
+  justify-content: center;
 }
 
 .inner-box {
@@ -47,16 +47,18 @@ header h1 {
 .inactive {
   background-color: #656;
   border: 1px solid #444;
-  width: 50px;
-  height: 50px;
+  /* width: 50px;
+  height: 50px; */
 }
 
 .avatar-board-img {
-  width: 45px;
+  width: 47px;
+  position: absolute;
+  z-index: 1;
 }
 
 .weapon-board-img {
-  width: 25px;
+  width: 23px;
 }
 
 .available-move {
@@ -65,13 +67,23 @@ header h1 {
 }
 
 .player-box-1 {
-  background-color: rebeccapurple;
-  /* grid-row: span 10; */
+  background-color: #663399;
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .player-box-2 {
-  background-color: green;
-  /* grid-row: span 10; */
+  background-color: #008000;
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+figure {
+  text-align: center;
 }
 
 .hide {
@@ -79,27 +91,16 @@ header h1 {
 }
 
 .game-board {
-  /* display: flex; */
   margin-left: 1px;
   margin-right: 1px;
 }
-
-/* .game-board section {
-  background-color: #ddd;
-  border: 1px solid #4169e1;
-} */
-
-/* .game-board section img {
-  width: 70%;
-  object-fit: cover;
-} */
 
 .game-board section.inactive-box {
   background-color: #555;
 }
 
 .active-player {
-  border: 2px dashed #006400;
+  border: 3px dotted #0b8f0b;
 }
 
 .error-msg {
@@ -115,4 +116,50 @@ header h1 {
 .invisible {
   opacity: 0;
   transition: 1000ms;
+}
+
+.game-container h3 {
+  margin: auto auto 0 auto;
+}
+
+.game-container p {
+  margin: 0 auto auto auto;
+}
+
+.game-container figure {
+  margin: 8px 20px;
+}
+
+.health-meter {
+  box-sizing: content-box;
+  background-color: #555;
+  width: 80%;
+  height: 22px;
+  border: 2px solid #aaa;
+  border-radius: 3px;
+}
+
+.hp-meter-value {
+  color: #fff;
+  width: 100%;
+  height: 22px;
+  display: block;
+  background-color: #6ef165;
+  border: 1px solid #777;
+  text-align: center;
+  font-family: 'Supermercado One', 'Lucida Sans', 'Lucida Sans Regular', sans-serif;
+  font-size: 1rem;
+}
+
+
+
+.weapon {
+  width: 50px;
+}
+
+.weapon-description {
+  font-size: 12px;
+  text-align: center;
+  padding-left: 3px;
+  padding-right: 3px;
 }

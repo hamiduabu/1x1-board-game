@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link href="https://fonts.googleapis.com/css?family=Permanent+Marker|Poppins|Ubuntu&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Modak|Pacifico|Saira+Condensed|Supermercado+One&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/modal.css">
   <link rel="stylesheet" href="css/game-board.css">
@@ -38,7 +39,7 @@
     <section class="modal-content">
       <header class="modal-header">
         <section>
-          <h3>Enter Player Details</h3>
+          <h3>Enter Code Name & Select Avatar</h3>
         </section>
 
         <section class="close-btn"><a href="#">&times;</a></section>
@@ -89,17 +90,57 @@
   <!-- Game -->
   <section class="game-container hide">
     <header>
-      <h1 id="combatants"></h1>
+      <h1 id="combatants" class="game-header"></h1>
     </header>
     <section class="game-area">
+      <!-- Player One -->
       <section class="player-box-1">
-        <h3><img src="#" alt="Player 2"></h3>
+        <figure><img id="avatar1" src="#" alt="Player 1">
+          <figcaption class="name"></figcaption>
+        </figure>
+        <!-- Health -->
+        <h3 class="health-points">HP</h3>
+        <section class="health-meter"><span class="hp-meter-value"></span></section>
+        <!-- End Health -->
+
+        <!-- Weapon -->
+        <h3>WEAPON</h3>
+        <figure>
+          <img src="#" alt="" class="weapon">
+          <figcaption class="weapon-name"></figcaption>
+        </figure>
+        <p class="weapon-description"></p>
+        <h3>Max AP</h3>
+        <p><span class="attack-points"></span></p>
+
       </section>
+      <!-- End Player One -->
+
       <section class="game-board-container"></section>
+
+      <!-- Player Two -->
       <section class="player-box-2">
-        <h3><img src="#" alt="Player 2"></h3>
+        <figure><img id="avatar2" src="#" alt="Player 2">
+          <figcaption class="name"></figcaption>
+        </figure>
+        <!-- Health -->
+        <h3 class="health-points">HP</h3>
+        <section class="health-meter"><span class="hp-meter-value"></span></section>
+        <!-- End Health -->
+
+        <!-- Weapon -->
+        <h3>WEAPON</h3>
+        <figure>
+          <img src="#" alt="" class="weapon">
+          <figcaption class="weapon-name"></figcaption>
+        </figure>
+        <p class="weapon-description"></p>
+        <h3>Max AP</h3>
+        <p><span class="attack-points"></span></p>
+
       </section>
     </section>
+    <!-- End Player Two -->
 
   </section>
   <section class="error-msg invisible">

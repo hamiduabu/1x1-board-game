@@ -115,127 +115,127 @@ const weaponItems = [
     name: 'Steel Boots',
     id: 1,
     description:
-      'Used during the Great War of Ages, these boots gives an extra "oomph" to your attacks for a 12 point attack damage',
+      'From the War of Ages. Your attacks get a potential 16 point attack damage boost',
     weaponUrl: 'assets/img/items/weapons/steel-boots.png',
     miniImgUrl: 'assets/img/items/weapons-mini/steel-boots-mini.png',
-    damage: 12,
+    damage: 16,
     default: false
   },
   {
-    name: 'Ice',
+    name: 'Ice Strike',
     id: 2,
     description:
-      'The elemental weapon of frost giants. With this you your attack points increase to 14',
+      'From the frost giants. Your your maximum attack points rise to 18',
     weaponUrl: 'assets/img/items/weapons/ice.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-mini.png',
-    damage: 14,
+    damage: 18,
     default: false
   },
   {
     name: 'Ice Sword',
     id: 3,
     description:
-      'Able to cut through almost anything, use this weapon for a 16 point damage',
+      'Able to cut almost anything, use this for a potential 20 point damage',
     weaponUrl: 'assets/img/items/weapons/ice-sword.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-sword-mini.png',
-    damage: 16,
-    default: false
-  },
-  {
-    name: 'Ice Fire',
-    id: 4,
-    description:
-      'Only the most gifted combatants can use this combination to dish out a total damage of 20 points',
-    weaponUrl: 'assets/img/items/weapons/ice-fire.png',
-    miniImgUrl: 'assets/img/items/weapons-mini/ice-fire-mini.png',
     damage: 20,
     default: false
   },
   {
-    name: 'Grapes',
-    id: 5,
+    name: 'Flaming Ice',
+    id: 4,
     description:
-      'Satisfy your hunger, increase your calorie intake and increase the damage you inflict to 12',
-    weaponUrl: 'assets/img/items/weapons/grapes.png',
-    miniImgUrl: 'assets/img/items/weapons-mini/grapes-mini.png',
-    damage: 12,
+      'Only the gifted can use this combination to dish out a potential damage of 22 points',
+    weaponUrl: 'assets/img/items/weapons/ice-fire.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/ice-fire-mini.png',
+    damage: 22,
     default: false
   },
   {
-    name: 'Flame',
+    name: 'Sour Grapes',
+    id: 5,
+    description:
+      'Increase your calorie intake and increase the maximum damage you inflict to 14',
+    weaponUrl: 'assets/img/items/weapons/grapes.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/grapes-mini.png',
+    damage: 14,
+    default: false
+  },
+  {
+    name: 'Flame Drop',
     id: 6,
     description:
-      'Light your paths, roast your beef and burn your opponents up to a 14 point damage',
+      'Light your paths and burn your opponents for a potential 18 point damage',
     weaponUrl: 'assets/img/items/weapons/flame.png',
     miniImgUrl: 'assets/img/items/weapons-mini/flame-mini.png',
-    damage: 14,
+    damage: 18,
     default: false
   },
   {
     name: 'Flame Sword',
     id: 7,
     description:
-      'The bane of the dark ghouls. Each strike would take away 16 points from your opponent',
+      'The bane of the dark. Each strike can take out up to 20 points',
     weaponUrl: 'assets/img/items/weapons/flame-sword.png',
     miniImgUrl: 'assets/img/items/weapons-mini/flame-sword-mini.png',
+    damage: 20,
+    default: false
+  },
+  {
+    name: 'Dual Axe',
+    id: 8,
+    description:
+      'Strike Left or strike right, this dual axe strikes for a potential 16 points damage',
+    weaponUrl: 'assets/img/items/weapons/dual-ax.png',
+    miniImgUrl: 'assets/img/items/weapons-mini/dual-ax-mini.png',
     damage: 16,
     default: false
   },
   {
-    name: 'Dual Ax',
-    id: 8,
-    description:
-      'Left or right, this ax strikes out 12 points from your opponent',
-    weaponUrl: 'assets/img/items/weapons/dual-ax.png',
-    miniImgUrl: 'assets/img/items/weapons-mini/dual-ax-mini.png',
-    damage: 12,
-    default: false
-  },
-  {
-    name: 'Drumsticks',
+    name: 'Fried Drumsticks',
     id: 9,
     description:
-      'Tasty for you, trouble for your opponents. This gives you enough energy to dish out an 11 point damage',
+      'Tasty! This gives you enough energy to dish up to a 14 point damage',
     weaponUrl: 'assets/img/items/weapons/drumsticks.png',
     miniImgUrl: 'assets/img/items/weapons-mini/drumsticks-mini.png',
-    damage: 11,
+    damage: 14,
     default: false
   },
   {
-    name: 'Dragon Glass Spear',
+    name: 'Dragon Spear',
     id: 10,
     description:
-      'Nothing in all of known creation is immune to the 18 point damage this weapon inflicts',
+      'Nothing known is immune to the potential 22 point damage of this weapon',
     weaponUrl: 'assets/img/items/weapons/dragon-glass-spear.png',
     miniImgUrl: 'assets/img/items/weapons-mini/dragon-glass-spear-mini.png',
-    damage: 18,
+    damage: 22,
     default: false
   },
   {
-    name: 'Cheese',
+    name: 'Golden Cheese',
     id: 11,
     description:
-      'Food for the Gods and all wise men. Your strength increase for you to inflict a 12 point damage',
+      'Food for all wise men. You get the ability to inflict a maximum 14 point damage',
     weaponUrl: 'assets/img/items/weapons/cheese.png',
     miniImgUrl: 'assets/img/items/weapons-mini/cheese-mini.png',
-    damage: 12,
+    damage: 14,
     default: false
   },
   {
     name: 'Blue Blade',
     id: 12,
     description:
-      'Also known as the unbreakable. It can deal a significant 14 point damage',
+      'The Unbreakable! It can deal a maximum 16 Attack Point damage',
     weaponUrl: 'assets/img/items/weapons/blue-blade.png',
     miniImgUrl: 'assets/img/items/weapons-mini/blue-blade-mini.png',
-    damage: 14,
+    damage: 16,
     default: false
   },
   {
-    name: 'Ax',
+    name: 'Red Axe',
     id: 13,
     description:
-      'A basic weapon, but gets the job done with the ability to strike for a 10 point damage',
+      'Every starters first weapon. It has a maximum 10 Attack Point damage',
     weaponUrl: 'assets/img/items/weapons/ax.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ax-mini.png',
     damage: 10,
@@ -259,4 +259,8 @@ export const inputId = imgSrc.map(img => {
 
 export const weapons = weaponItems
   .filter(weapon => weapon.default === false)
+  .map(weapon => weapon);
+
+export const defaultWeapon = weaponItems
+  .filter(weapon => weapon.default === true)
   .map(weapon => weapon);

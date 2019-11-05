@@ -14,12 +14,6 @@ export class Player {
     this.weaponId = weaponId;
     this.health = health;
   }
-  moveUp() {}
-  moveRight() {}
-  moveDown() {}
-  moveLeft() {}
-  attack() {}
-  defend() {}
 }
 
 export class Board {
