@@ -17,11 +17,7 @@
   display: none;
 }
 
-.modal * {
-  font-family: 'Saira Condensed', 'Lucida Sans', 'Lucida Sans Regular', sans-serif;
-}
-
-.modal:target {
+.modal-display {
   opacity: 1;
   pointer-events: auto;
   display: flex;
@@ -29,6 +25,7 @@
 
 .modal .modal-content {
   background-color: #fff;
+  color: #fff;
   width: 70%;
   padding: 20px;
   border-radius: 5px;
@@ -43,31 +40,54 @@
   text-align: center;
 }
 
-.modal header.modal-header .close-btn {
+.modal header.modal-header .close-btn-container {
   text-align: end;
+  border: none;
+  margin-top: 0;
+}
+
+.modal header.modal-header .close-btn {
+  border: none;
+  background-color: transparent;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #3b3939;
+  cursor: pointer;
 }
 
 header.modal-header h3 {
   margin-top: 0;
-
-}
-
-header.modal-header a {
-  text-decoration: none;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 1.5rem;
   color: #000;
 }
-
-header.modal-header a:hover {
-  color: #777;
-}
-
 
 .player-input {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-evenly;
+}
+
+label[for="player-one"],
+label[for="player-two"] {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #000;
+}
+
+.player-name input[type="text"] {
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: 1px solid #444;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.player1 .player-name input[type="text"]:focus {
+  background-color: rgba(102, 51, 153, 0.25);
+}
+
+.player2 .player-name input[type="text"]:focus {
+  background-color: rgba(0, 128, 0, 0.25);
 }
 
 .modal-select-player .player1,
@@ -82,14 +102,14 @@ header.modal-header a:hover {
 
 .modal footer.modal-footer button {
   padding: 10px;
-  font-family: 'Saira Condensed', sans-serif;
   font-weight: 600;
   color: #fff;
   background-color: #a52a2a;
   width: 100px;
   border-radius: 5px;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
 }
 
 .modal footer.modal-footer button:hover {
@@ -115,6 +135,7 @@ header.modal-header a:hover {
 
 .avatar-options img {
   width: 50px;
+  padding: 3px;
 }
 
 .avatar-options input[type="radio"] {
@@ -122,5 +143,31 @@ header.modal-header a:hover {
 }
 
 .avatar-options input[type="radio"]:checked+img {
-  border: 2px dashed green;
+  border: 2px inset #d3d3d3;
+  padding: 5px;
+  transition: 200ms;
+}
+
+.player1 .avatar-options input[type="radio"]:checked+img {
+  background-color: rgba(102, 51, 153, 0.5);
+}
+
+.player2 .avatar-options input[type="radio"]:checked+img {
+  background-color: hsla(120, 100%, 25%, 0.5);
+}
+
+.winner {
+  opacity: 1;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+}
+
+.winner .modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

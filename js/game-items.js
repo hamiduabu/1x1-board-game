@@ -1,4 +1,73 @@
-import * as utils from './game-utilities.js';
+import { shuffle } from './game-utilities.js';
+
+export const galleryImgs = [
+  {
+    image: '../assets/img/gallery/1-select-avatar.png',
+    caption: 'Enter a Cool Code Name and Select an Avatar'
+  },
+  {
+    image: '../assets/img/gallery/2-highlighted-moves.png',
+    caption: 'Available Moves are Highlighted in Green'
+  },
+  {
+    image: '../assets/img/gallery/3-highlighted-moves2.png',
+    caption: 'Available Moves are Highlighted in Green'
+  },
+  {
+    image: '../assets/img/gallery/4-highlighted-moves3.png',
+    caption: 'Available Moves are Highlighted in Green'
+  },
+  {
+    image: '../assets/img/gallery/5-weapons1.png',
+    caption: 'Select the best Weapon on the Board'
+  },
+  {
+    image: '../assets/img/gallery/6-weapons2.png',
+    caption:
+      'The best Weapon would be the one with the highest Maximum Attack Points(AP)'
+  },
+  {
+    image: '../assets/img/gallery/7-weapons3.png',
+    caption:
+      'Selecting the best Weapon is the first step to winning your Battle'
+  },
+  {
+    image: '../assets/img/gallery/8-replace-weapons.png',
+    caption: 'Move to a Weapon Square to pick it up'
+  },
+  {
+    image: '../assets/img/gallery/9-battle-condition.png',
+    caption: 'Move to your opponents Adjacent Square to start a battle'
+  },
+  {
+    image: '../assets/img/gallery/10-battle-condition2.png',
+    caption: 'Try to Start a Battle before your opponent replaces their weapon'
+  },
+  {
+    image: '../assets/img/gallery/11-battle-condition3.png',
+    caption: 'Move to your opponents Adjacent Square to start a battle'
+  },
+  {
+    image: '../assets/img/gallery/12-attack1.png',
+    caption: 'Weapons are activated in Battle Mode'
+  },
+  {
+    image: '../assets/img/gallery/13-attack2.png',
+    caption: 'Click on your weapon to launch it at your opponent'
+  },
+  {
+    image: '../assets/img/gallery/14-attack3.png',
+    caption: 'A turn is completed when your opponent responds to your attack'
+  },
+  {
+    image: '../assets/img/gallery/15-raise-shields1.png',
+    caption: 'Click on your Shield to activate it'
+  },
+  {
+    image: '../assets/img/gallery/16-raise-shields2.png',
+    caption: 'Use shields to reduce potential damage by half'
+  }
+];
 
 export const avatars = [
   {
@@ -114,8 +183,7 @@ const weaponItems = [
   {
     name: 'Steel Boots',
     id: 1,
-    description:
-      'From the War of Ages. Your attacks get a potential 16 point attack damage boost',
+    description: 'These boots will boost your Max. damage to 16',
     weaponUrl: 'assets/img/items/weapons/steel-boots.png',
     miniImgUrl: 'assets/img/items/weapons-mini/steel-boots-mini.png',
     damage: 16,
@@ -124,8 +192,7 @@ const weaponItems = [
   {
     name: 'Ice Strike',
     id: 2,
-    description:
-      'From the frost giants. Your your maximum attack points rise to 18',
+    description: 'From Deep Ice. You get Max. attack points of 18',
     weaponUrl: 'assets/img/items/weapons/ice.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-mini.png',
     damage: 18,
@@ -134,38 +201,34 @@ const weaponItems = [
   {
     name: 'Ice Sword',
     id: 3,
-    description:
-      'Able to cut almost anything, use this for a potential 20 point damage',
+    description: 'Cut through anything for a Max. 20 point damage',
     weaponUrl: 'assets/img/items/weapons/ice-sword.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-sword-mini.png',
     damage: 20,
     default: false
   },
   {
-    name: 'Flaming Ice',
+    name: 'Flame Ice',
     id: 4,
-    description:
-      'Only the gifted can use this combination to dish out a potential damage of 22 points',
+    description: 'A rare item that raises Max. damage to 22',
     weaponUrl: 'assets/img/items/weapons/ice-fire.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-fire-mini.png',
     damage: 22,
     default: false
   },
   {
-    name: 'Sour Grapes',
+    name: 'Grapes',
     id: 5,
-    description:
-      'Increase your calorie intake and increase the maximum damage you inflict to 14',
+    description: 'Food Fight!!! Raises Max. damage to 14',
     weaponUrl: 'assets/img/items/weapons/grapes.png',
     miniImgUrl: 'assets/img/items/weapons-mini/grapes-mini.png',
     damage: 14,
     default: false
   },
   {
-    name: 'Flame Drop',
+    name: 'Fire Ball',
     id: 6,
-    description:
-      'Light your paths and burn your opponents for a potential 18 point damage',
+    description: 'It Burns!!! Your Max. damage rises to 18',
     weaponUrl: 'assets/img/items/weapons/flame.png',
     miniImgUrl: 'assets/img/items/weapons-mini/flame-mini.png',
     damage: 18,
@@ -174,8 +237,7 @@ const weaponItems = [
   {
     name: 'Flame Sword',
     id: 7,
-    description:
-      'The bane of the dark. Each strike can take out up to 20 points',
+    description: 'The bane of the dark. Raises Max. damage to 20',
     weaponUrl: 'assets/img/items/weapons/flame-sword.png',
     miniImgUrl: 'assets/img/items/weapons-mini/flame-sword-mini.png',
     damage: 20,
@@ -184,38 +246,34 @@ const weaponItems = [
   {
     name: 'Dual Axe',
     id: 8,
-    description:
-      'Strike Left or strike right, this dual axe strikes for a potential 16 points damage',
+    description: 'Strikes both ways! You get a Max. 16 points damage',
     weaponUrl: 'assets/img/items/weapons/dual-ax.png',
     miniImgUrl: 'assets/img/items/weapons-mini/dual-ax-mini.png',
     damage: 16,
     default: false
   },
   {
-    name: 'Fried Drumsticks',
+    name: 'Drumsticks',
     id: 9,
-    description:
-      'Tasty! This gives you enough energy to dish up to a 14 point damage',
+    description: 'Tasty! Able to dish out up to a 14 point damage',
     weaponUrl: 'assets/img/items/weapons/drumsticks.png',
     miniImgUrl: 'assets/img/items/weapons-mini/drumsticks-mini.png',
     damage: 14,
     default: false
   },
   {
-    name: 'Dragon Spear',
+    name: 'Dark Spear',
     id: 10,
-    description:
-      'Nothing known is immune to the potential 22 point damage of this weapon',
+    description: 'Nothing is safe from its potential 22 point damage',
     weaponUrl: 'assets/img/items/weapons/dragon-glass-spear.png',
     miniImgUrl: 'assets/img/items/weapons-mini/dragon-glass-spear-mini.png',
     damage: 22,
     default: false
   },
   {
-    name: 'Golden Cheese',
+    name: 'Gold Cheese',
     id: 11,
-    description:
-      'Food for all wise men. You get the ability to inflict a maximum 14 point damage',
+    description: 'You get to hit for a Max. 14 point damage',
     weaponUrl: 'assets/img/items/weapons/cheese.png',
     miniImgUrl: 'assets/img/items/weapons-mini/cheese-mini.png',
     damage: 14,
@@ -224,8 +282,7 @@ const weaponItems = [
   {
     name: 'Blue Blade',
     id: 12,
-    description:
-      'The Unbreakable! It can deal a maximum 16 Attack Point damage',
+    description: 'Unbreakable! Can deal a Max. 16 Point damage',
     weaponUrl: 'assets/img/items/weapons/blue-blade.png',
     miniImgUrl: 'assets/img/items/weapons-mini/blue-blade-mini.png',
     damage: 16,
@@ -234,8 +291,7 @@ const weaponItems = [
   {
     name: 'Red Axe',
     id: 13,
-    description:
-      'Every starters first weapon. It has a maximum 10 Attack Point damage',
+    description: 'A basic weapon. It has a 10 Attack Point damage',
     weaponUrl: 'assets/img/items/weapons/ax.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ax-mini.png',
     damage: 10,
@@ -243,13 +299,13 @@ const weaponItems = [
   }
 ];
 
-export const imgSrc = utils.shuffle(
+const imgSrc = shuffle(
   avatars.map(avatar => {
     return avatar.miniImgUrl;
   })
 );
 
-export const inputId = imgSrc.map(img => {
+const inputId = imgSrc.map(img => {
   for (const avatar of avatars) {
     if (img === avatar.miniImgUrl) {
       return `av-${avatar.id}`;
@@ -264,3 +320,11 @@ export const weapons = weaponItems
 export const defaultWeapon = weaponItems
   .filter(weapon => weapon.default === true)
   .map(weapon => weapon);
+
+export function setAvatarInputOptions(images) {
+  images.forEach((img, index) => {
+    img.src = imgSrc[index];
+    img.previousElementSibling.id = inputId[index];
+    img.parentElement.setAttribute('for', inputId[index]);
+  });
+}
