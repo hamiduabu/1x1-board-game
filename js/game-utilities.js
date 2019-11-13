@@ -1,6 +1,3 @@
-import { domNode1 } from './dom-variables.js';
-import * as item from './game-items.js';
-
 export function generateElement(element) {
   return document.createElement(element);
 }
@@ -144,24 +141,6 @@ export function highlightAvailableSquares(squares) {
   }
 }
 
-export function updatePlayerWeapon(
-  player,
-  weaponCache = item.defaultWeapon,
-  id = 13
-) {
-  const weaponProperty = {};
-  for (const weapon of weaponCache) {
-    if (weapon.id === id) {
-      weaponProperty.image = weapon.weaponUrl;
-      weaponProperty.name = weapon.name;
-      weaponProperty.description = weapon.description;
-      weaponProperty.damage = weapon.damage;
-      player.weaponId = id;
-    }
-  }
-  return weaponProperty;
-}
-
 export function manageTurns(num) {
   if (num === 3 || num === 6) {
     num = 0;
@@ -173,4 +152,16 @@ export function manageTurns(num) {
     num = 2;
   }
   return num;
+}
+
+export function intervalCounter(end, start = 0) {
+  let index = start;
+  return function incrementIndex() {
+    let count = index;
+    index += 1;
+    if (index === end) {
+      index = start;
+    }
+    return count;
+  };
 }

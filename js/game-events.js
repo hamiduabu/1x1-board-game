@@ -1,25 +1,40 @@
-import { domNode1 } from './dom-variables.js';
-import { domNode2 } from './dom-variables.js';
+import { game } from './dom-variables.js';
+import { playerBox } from './dom-variables.js';
 import * as utils from './game-utilities.js';
 import * as item from './game-items.js';
 import { Player } from './game-prototypes.js';
 import { Board } from './game-prototypes.js';
 
+// Display Player Options
+export function managePlayerOptions() {
+  document.addEventListener('click', function(event) {
+    if (event.target === game.playerOptionsBtn) {
+      game.playerOptionsModal.classList.add('modal-display');
+    }
+    if (event.target === game.playerOptionsCancelBtn) {
+      game.closeModal(game.playerOptionsModal);
+    }
+  });
+}
+
+// export function cancelPlayerOptions() {}
+
 // Modal events
 export function startGame() {
-  domNode1.startGameBtn.addEventListener('click', () => {
+  game.startGameBtn.addEventListener('click', () => {
     console.log('Starting ...');
     //Get player details
     // Consider using destructuring below
     // const [playerOne, playerTwo] = getPlayerDetails();
-    const players = getPlayerDetails();
+    const players = getInitialPlayerDetails();
     const [playerOne, playerTwo] = players;
 
     // Reset Modal Form
-    domNode1.playerInputForm.reset();
+    game.playerInputForm.reset();
 
     // Hide landing page and modal
-    domNode1.clearScreen();
+    game.closeModal(game.playerOptionsModal);
+    game.clearScreen();
 
     // create game board
     const board = new Board();
@@ -117,30 +132,32 @@ export function startGame() {
 
     // Player Avatar and name
 
-    domNode2.playerBoxOneImg.src = playerOne.mainImgUrl;
-    domNode2.playerBoxTwoImg.src = playerTwo.mainImgUrl;
+    playerBox.playerOneImg.src = playerOne.mainImgUrl;
+    playerBox.playerTwoImg.src = playerTwo.mainImgUrl;
 
-    domNode2.playerBoxOneName.textContent = `${playerOne.name}`;
-    domNode2.playerBoxTwoName.textContent = `${playerTwo.name}`;
+    playerBox.playerOneName.textContent = `${playerOne.name}`;
+    playerBox.playerTwoName.textContent = `${playerTwo.name}`;
 
     // Health Points
 
-    domNode2.playerOneHpValue.textContent = '100';
-    domNode2.playerTwoHpValue.textContent = '100';
+    playerBox.playerOneHpValue.textContent = '100';
+    playerBox.playerTwoHpValue.textContent = '100';
 
     [
-      domNode2.playerOneWeaponImg.src,
-      domNode2.playerOneWeaponName.textContent,
-      domNode2.playerOneWeaponDesc.textContent,
-      domNode2.playerOneWeaponAp.textContent
-    ] = Object.values(utils.updatePlayerWeapon(playerOne));
+      playerBox.playerOneWeaponImg.id,
+      playerBox.playerOneWeaponImg.src,
+      playerBox.playerOneWeaponName.textContent,
+      playerBox.playerOneWeaponDesc.textContent,
+      playerBox.playerOneWeaponAp.textContent
+    ] = Object.values(updatePlayerWeapon(playerOne));
 
     [
-      domNode2.playerTwoWeaponImg.src,
-      domNode2.playerTwoWeaponName.textContent,
-      domNode2.playerTwoWeaponDesc.textContent,
-      domNode2.playerTwoWeaponAp.textContent
-    ] = Object.values(utils.updatePlayerWeapon(playerTwo));
+      playerBox.playerTwoWeaponImg.id,
+      playerBox.playerTwoWeaponImg.src,
+      playerBox.playerTwoWeaponName.textContent,
+      playerBox.playerTwoWeaponDesc.textContent,
+      playerBox.playerTwoWeaponAp.textContent
+    ] = Object.values(updatePlayerWeapon(playerTwo));
 
     // append to dom
     document.querySelector('.game-board-container').appendChild(boardFragment);
@@ -149,6 +166,7 @@ export function startGame() {
 
     // console.log(playerTwo);
     // console.log(playerOne);
+    return { players };
   });
 }
 
@@ -201,15 +219,15 @@ function setupBoardItem(
 }
 
 // Get players details from Modal Dialog Form
-function getPlayerDetails() {
-  const playerOneName = utils.getPlayerName(domNode1.playerOneNameInput);
+function getInitialPlayerDetails() {
+  const playerOneName = utils.getPlayerName(game.playerOneNameInput);
   const playerOneAvatarDetails = utils.getPlayerAvatarDetails(
-    domNode1.playerOneAvatarSelect(),
+    game.playerOneAvatarSelect(),
     item.avatars
   );
-  const playerTwoName = utils.getPlayerName(domNode1.playerTwoNameInput);
+  const playerTwoName = utils.getPlayerName(game.playerTwoNameInput);
   const playerTwoAvatarDetails = utils.getPlayerAvatarDetails(
-    domNode1.playerTwoAvatarSelect(),
+    game.playerTwoAvatarSelect(),
     item.avatars
   );
   const playerOne = new Player(
@@ -237,15 +255,18 @@ function manageMovements(
   weapons
 ) {
   let numberOfTurns = 0;
+  let allowedKeys = [
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowRight',
+    'ArrowLeft',
+    'Space'
+  ];
 
-  document.addEventListener('keydown', function(event) {
-    const allowedKeys = [
-      'ArrowUp',
-      'ArrowDown',
-      'ArrowRight',
-      'ArrowLeft',
-      'Space'
-    ];
+  document.addEventListener('keydown', function keyDownEvent(event) {
+    if (game.gameBoardContainer.childElementCount === 0) {
+      allowedKeys = [];
+    }
     if (!allowedKeys.includes(event.key)) {
       return event.preventDefault();
     }
@@ -254,116 +275,116 @@ function manageMovements(
     }
     availableSquares = [];
 
-    return (function() {
-      if (event.code === 'ArrowUp') {
-        const topSquare =
-          playerTurn.parentElement.parentElement.previousElementSibling;
-        if (!topSquare) {
-          return domNode1.toggleError();
-        }
-        if (
-          topSquare.children[
-            utils.getElementPresentPositionIndex(playerTurn)
-          ].classList.contains('inactive')
-        ) {
-          return domNode1.toggleError();
-        }
+    if (event.code === 'ArrowUp') {
+      const topSquare =
+        playerTurn.parentElement.parentElement.previousElementSibling;
+      if (!topSquare) {
+        return game.toggleError();
+      }
+      if (
         topSquare.children[
           utils.getElementPresentPositionIndex(playerTurn)
-        ].appendChild(playerTurn);
-        numberOfTurns += 1;
+        ].classList.contains('inactive')
+      ) {
+        return game.toggleError();
       }
-      if (event.code === 'ArrowDown') {
-        const bottomSquare =
-          playerTurn.parentElement.parentElement.nextElementSibling;
-        if (!bottomSquare) {
-          return domNode1.toggleError();
-        }
-        if (
-          bottomSquare.children[
-            utils.getElementPresentPositionIndex(playerTurn)
-          ].classList.contains('inactive')
-        ) {
-          return domNode1.toggleError();
-        }
+      topSquare.children[
+        utils.getElementPresentPositionIndex(playerTurn)
+      ].appendChild(playerTurn);
+      numberOfTurns += 1;
+    }
+    if (event.code === 'ArrowDown') {
+      const bottomSquare =
+        playerTurn.parentElement.parentElement.nextElementSibling;
+      if (!bottomSquare) {
+        return game.toggleError();
+      }
+      if (
         bottomSquare.children[
           utils.getElementPresentPositionIndex(playerTurn)
-        ].appendChild(playerTurn);
-        numberOfTurns += 1;
-      }
-      if (event.code === 'ArrowLeft') {
-        const leftSquare = playerTurn.parentElement.previousElementSibling;
-        if (!leftSquare || leftSquare.classList.contains('inactive')) {
-          return domNode1.toggleError();
-        }
-        leftSquare.appendChild(playerTurn);
-        numberOfTurns += 1;
-      }
-      if (event.code === 'ArrowRight') {
-        const rightSquare = playerTurn.parentElement.nextElementSibling;
-        if (!rightSquare || rightSquare.classList.contains('inactive')) {
-          return domNode1.toggleError();
-        }
-        rightSquare.appendChild(playerTurn);
-        numberOfTurns += 1;
-      }
-      if (numberOfTurns === 3) {
-        playerTurn.classList.remove('active-player');
-        playerTurn = player2;
-        playerTurn.classList.add('active-player');
-      }
-
-      if (numberOfTurns >= 3 && numberOfTurns <= 6) {
-        playerTurn = player2;
-      }
-
-      if (numberOfTurns === 6) {
-        playerTurn.classList.remove('active-player');
-        numberOfTurns = 0;
-        playerTurn = player1;
-        playerTurn.classList.add('active-player');
-      }
-
-      // Switch Weapons
-      let presentPlayer;
-      if (numberOfTurns > 0 && numberOfTurns <= 3) {
-        presentPlayer = player1;
-      } else {
-        presentPlayer = player2;
-      }
-      const presentPlayerSquare = presentPlayer.parentElement;
-      if (
-        presentPlayerSquare.firstElementChild.classList.contains(
-          'weapon-board-img'
-        )
+        ].classList.contains('inactive')
       ) {
-        const newWeaponId = utils.extractNumbers(
-          presentPlayerSquare.firstElementChild.id
-        );
-        const [playerOne, playerTwo] = players;
-        if (presentPlayer === player1) {
-          switchWeapon(
-            playerOne,
-            'playerOne',
-            newWeaponId,
-            weapons,
-            presentPlayerSquare
-          );
-        } else {
-          switchWeapon(
-            playerTwo,
-            'playerTwo',
-            newWeaponId,
-            weapons,
-            presentPlayerSquare
-          );
-        }
+        return game.toggleError();
       }
-    })();
+      bottomSquare.children[
+        utils.getElementPresentPositionIndex(playerTurn)
+      ].appendChild(playerTurn);
+      numberOfTurns += 1;
+    }
+    if (event.code === 'ArrowLeft') {
+      const leftSquare = playerTurn.parentElement.previousElementSibling;
+      if (!leftSquare || leftSquare.classList.contains('inactive')) {
+        return game.toggleError();
+      }
+      leftSquare.appendChild(playerTurn);
+      numberOfTurns += 1;
+    }
+    if (event.code === 'ArrowRight') {
+      const rightSquare = playerTurn.parentElement.nextElementSibling;
+      if (!rightSquare || rightSquare.classList.contains('inactive')) {
+        return game.toggleError();
+      }
+      rightSquare.appendChild(playerTurn);
+      numberOfTurns += 1;
+    }
+    if (numberOfTurns === 3) {
+      playerTurn.classList.remove('active-player');
+      playerTurn = player2;
+      playerTurn.classList.add('active-player');
+    }
+
+    if (numberOfTurns >= 3 && numberOfTurns <= 6) {
+      playerTurn = player2;
+    }
+
+    if (numberOfTurns === 6) {
+      playerTurn.classList.remove('active-player');
+      numberOfTurns = 0;
+      playerTurn = player1;
+      playerTurn.classList.add('active-player');
+    }
+
+    // Switch Weapons
+    let presentPlayer;
+    if (numberOfTurns > 0 && numberOfTurns <= 3) {
+      presentPlayer = player1;
+    } else {
+      presentPlayer = player2;
+    }
+    const presentPlayerSquare = presentPlayer.parentElement;
+    if (
+      presentPlayerSquare.firstElementChild.classList.contains(
+        'weapon-board-img'
+      )
+    ) {
+      const newWeaponId = utils.extractNumbers(
+        presentPlayerSquare.firstElementChild.id
+      );
+      const [playerOne, playerTwo] = players;
+      if (presentPlayer === player1) {
+        switchWeapon(
+          playerOne,
+          'playerOne',
+          newWeaponId,
+          weapons,
+          presentPlayerSquare
+        );
+      } else {
+        switchWeapon(
+          playerTwo,
+          'playerTwo',
+          newWeaponId,
+          weapons,
+          presentPlayerSquare
+        );
+      }
+    }
   });
 
-  document.addEventListener('keyup', function(event) {
-    const allowedKeys = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
+  document.addEventListener('keyup', function keyUpEvent(event) {
+    if (game.gameBoardContainer.childElementCount === 0) {
+      allowedKeys = [];
+    }
     if (!allowedKeys.includes(event.key)) {
       return event.preventDefault();
     }
@@ -400,12 +421,13 @@ function switchWeapon(
   const oldWeaponId = playerObject.weaponId;
   currentPlayer.weaponId = newWeaponId;
   [
-    domNode2[`${playerString}WeaponImg`].src,
-    domNode2[`${playerString}WeaponName`].textContent,
-    domNode2[`${playerString}WeaponDesc`].textContent,
-    domNode2[`${playerString}WeaponAp`].textContent
+    playerBox[`${playerString}WeaponImg`].id,
+    playerBox[`${playerString}WeaponImg`].src,
+    playerBox[`${playerString}WeaponName`].textContent,
+    playerBox[`${playerString}WeaponDesc`].textContent,
+    playerBox[`${playerString}WeaponAp`].textContent
   ] = Object.values(
-    utils.updatePlayerWeapon(currentPlayer, weaponsCache, newWeaponId)
+    updatePlayerWeapon(currentPlayer, weaponsCache, newWeaponId)
   );
   dropOldWeapon(weaponsCache, oldWeaponId, presentPlayerSquare);
 }
@@ -543,7 +565,10 @@ function savePositions(player) {
 function checkForBattleCondition(validAdjacentSquares) {
   for (const square of validAdjacentSquares) {
     if (square.children.player1 || square.children.player2) {
-      alert('Lets Rumble!!!');
+      game.gameBoardContainer.removeChild(
+        document.querySelector('.game-board')
+      );
+      return startBattle();
     }
   }
 }
@@ -567,4 +592,271 @@ function dropOldWeapon(weapons, oldWeaponId, presentPlayerSquare) {
       presentPlayerSquare.firstElementChild.id = `weapon${oldWeaponId}`;
     }
   }
+}
+
+// Battle
+function startBattle() {
+  game.gameBoardBattle.style.backgroundImage =
+    'url("/assets/bg-img/battle-bg-light.png")';
+  game.gameBoardBattle.classList.remove('hide');
+  playerBox.playerOneWeapon.classList.add('player-one-battle-mode');
+  playerBox.playerTwoWeapon.classList.add('player-two-battle-mode');
+  playerBox.playerOneShield.classList.add('player-one-battle-mode');
+  playerBox.playerOneShield.classList.remove('hide');
+  playerBox.playerTwoShield.classList.add('player-two-battle-mode');
+  playerBox.playerTwoShield.classList.remove('hide');
+  playerBox.playerOneWeaponProjectile.src = playerBox.playerOneWeaponImg.src;
+  playerBox.playerTwoWeaponProjectile.src = playerBox.playerTwoWeaponImg.src;
+  createAttack();
+}
+
+function createAttack(turn = 1) {
+  const playerOne = getUpdatedPlayerDetails('playerOne');
+  const playerTwo = getUpdatedPlayerDetails('playerTwo');
+  let isPlayerOneShieldUp = false;
+  let isPlayerTwoShieldUp = false;
+  let shooter;
+  if (turn === 1) {
+    shooter = playerOne;
+  } else {
+    shooter = playerTwo;
+  }
+  shooter.avatar.classList.add('active-shooter');
+
+  // Manage Shields
+  [playerBox.playerOneShield, playerBox.playerTwoShield].forEach(
+    playerShield => {
+      playerShield.addEventListener('click', event => {
+        if (event.target.closest('#player-one-shield') && turn === 1) {
+          if (isPlayerOneShieldUp === false) {
+            isPlayerOneShieldUp = true;
+          } else {
+            return game.toggleShieldAlert();
+          }
+
+          playerTwo.avatar.classList.add('active-shooter');
+          playerOne.avatar.classList.remove('active-shooter');
+          playerOne.avatar.classList.add('right-shield-up');
+          turn = 2;
+        } else if (event.target.closest('#player-two-shield') && turn === 2) {
+          if (isPlayerTwoShieldUp === false) {
+            isPlayerTwoShieldUp = true;
+          } else {
+            return game.toggleShieldAlert();
+          }
+
+          playerOne.avatar.classList.add('active-shooter');
+          playerTwo.avatar.classList.remove('active-shooter');
+          playerBox.playerTwoImg.classList.add('left-shield-up');
+          turn = 1;
+        }
+      });
+    }
+  );
+
+  // Manage Attacks
+  [playerBox.playerOneWeapon, playerBox.playerTwoWeapon].forEach(
+    playerWeapon => {
+      playerWeapon.addEventListener('click', event => {
+        if (event.target.closest('#player-one-weapon') && turn === 1) {
+          playerTwo.avatar.classList.add('active-shooter');
+          playerOne.avatar.classList.remove('active-shooter');
+          setTimeout(() => {
+            playerBox.playerTwoImg.classList.remove('left-shield-up');
+          }, 1500);
+
+          launchAttack(playerOne, 'attack-right');
+          turn = 2;
+          calculateDamage(playerOne, playerTwo, turn, isPlayerTwoShieldUp);
+          isPlayerTwoShieldUp = false;
+        } else if (event.target.closest('#player-two-weapon') && turn === 2) {
+          playerOne.avatar.classList.add('active-shooter');
+          playerTwo.avatar.classList.remove('active-shooter');
+          setTimeout(() => {
+            playerBox.playerOneImg.classList.remove('right-shield-up');
+          }, 1500);
+
+          launchAttack(playerTwo, 'attack-left');
+          turn = 1;
+          calculateDamage(playerTwo, playerOne, turn, isPlayerOneShieldUp);
+          isPlayerOneShieldUp = false;
+        }
+      });
+    }
+  );
+}
+
+function launchAttack(fromPlayer, attackType) {
+  fromPlayer.WeaponProjectile.classList.add('active-projectile');
+  setTimeout(function() {
+    fromPlayer.WeaponProjectile.classList.add(attackType);
+  }, 0);
+  setTimeout(function() {
+    fromPlayer.WeaponProjectile.classList.remove('active-projectile');
+    fromPlayer.WeaponProjectile.classList.remove(attackType);
+  }, 1550);
+}
+
+function calculateDamage(fromPlayer, toPlayer, turn, shieldsUp) {
+  const maxAttackPoints = fromPlayer.maxAttackPoints;
+  let damage = utils.generateUniqueRandomNumbers(10, maxAttackPoints + 1)[0];
+  if (shieldsUp) {
+    damage = Math.floor(
+      utils.generateUniqueRandomNumbers(10, maxAttackPoints + 1)[0] / 2
+    );
+  }
+  updateHealthMeter(fromPlayer, toPlayer, damage, turn);
+}
+
+function updateHealthMeter(fromPlayer, toPlayer, damage, turn) {
+  toPlayer.health -= damage;
+  if (toPlayer.health <= 0) {
+    toPlayer.health = 0;
+  }
+  setTimeout(() => {
+    if (toPlayer.health >= 0 && toPlayer.health < 39) {
+      toPlayer.healthMeter.style.backgroundColor = '#ff7465';
+    } else if (toPlayer.health >= 40 && toPlayer.health < 59) {
+      toPlayer.healthMeter.style.backgroundColor = '#f1ec65';
+    } else if (toPlayer.health >= 60 && toPlayer.health < 79) {
+      toPlayer.healthMeter.style.backgroundColor = '#bbf165';
+    }
+
+    toPlayer.healthMeter.style.width = `${toPlayer.health}%`;
+    toPlayer.healthMeter.textContent = toPlayer.health;
+  }, 1500);
+
+  setTimeout(() => {
+    if (turn === 1 && toPlayer.health <= 0 && fromPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner');
+      document.querySelector(
+        '#winner-details h1'
+      ).textContent = `${toPlayer.name} - DRAWS WITH - ${fromPlayer.name}`;
+      document.querySelector('#winner-details img#winner-one').src =
+        toPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-one')
+        .classList.remove('hide');
+      document.querySelector('#winner-details img#winner-two').src =
+        fromPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-two')
+        .classList.remove('hide');
+    } else if (turn === 1 && toPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner');
+      document.querySelector('#winner-details h1').textContent =
+        fromPlayer.name + ' Wins';
+      document.querySelector('#winner-details img#winner-two').src =
+        fromPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-two')
+        .classList.remove('hide');
+    } else if (turn === 1 && fromPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner');
+      document.querySelector('#winner-details h1').textContent =
+        toPlayer.name + ' Wins';
+      document.querySelector('#winner-details img#winner-one').src =
+        toPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-one')
+        .classList.remove('hide');
+    }
+  }, 1500);
+
+  gameReload();
+}
+
+function gameReload() {
+  const homeBtn = document.querySelector('#game-over');
+  homeBtn.addEventListener('click', function(event) {
+    location.reload();
+  });
+}
+
+function getUpdatedPlayerDetails(playerString) {
+  const player = {
+    name: playerBox[`${playerString}Name`].textContent,
+    avatar: playerBox[`${playerString}Img`],
+    avatarImg: playerBox[`${playerString}Img`].src,
+    weaponId: utils.extractNumbers(playerBox[`${playerString}WeaponImg`].id),
+    weaponName: playerBox[`${playerString}WeaponName`].textContent,
+    weaponImg: playerBox[`${playerString}WeaponImg`].src,
+    maxAttackPoints: Number(playerBox[`${playerString}WeaponAp`].textContent),
+    WeaponProjectile: playerBox[`${playerString}WeaponProjectile`],
+    WeaponProjectileImg: playerBox[`${playerString}WeaponProjectile`].src,
+    health: Number(playerBox[`${playerString}HpValue`].textContent),
+    healthMeter: playerBox[`${playerString}HpValue`]
+  };
+  return player;
+}
+
+export function startSlideShow() {
+  const indexFromImageIndexRange = utils.intervalCounter(
+    item.galleryImgs.length
+  );
+  setGalleryImageAndCaption(
+    game.galleryImg,
+    game.galleryImgCaption,
+    indexFromImageIndexRange()
+  );
+
+  let imageInterval = setInterval(() => {
+    switchImages(indexFromImageIndexRange);
+  }, 7000);
+
+  document.addEventListener('click', event => {
+    if (event.target === game.startGameBtn) {
+      clearInterval(imageInterval);
+    }
+  });
+  game.gallery.addEventListener('mouseover', event => {
+    clearInterval(imageInterval);
+    // game.galleryImg.classList.add('zoom');
+    game.galleryImgCaption.classList.add('invisible');
+  });
+  game.gallery.addEventListener('mouseout', event => {
+    imageInterval = setInterval(() => {
+      switchImages(indexFromImageIndexRange);
+    }, 7000);
+    // game.galleryImg.classList.remove('zoom');
+    game.galleryImgCaption.classList.remove('invisible');
+  });
+}
+
+function switchImages(imageIndex) {
+  game.gallery.classList.add('invisible');
+  setTimeout(() => {
+    setGalleryImageAndCaption(
+      game.galleryImg,
+      game.galleryImgCaption,
+      imageIndex()
+    );
+  }, 1000);
+  setTimeout(() => {
+    game.gallery.classList.add('visible');
+  }, 1000);
+  setTimeout(() => {
+    game.gallery.classList.remove('invisible');
+    game.gallery.classList.remove('visible');
+  }, 1500);
+}
+
+function setGalleryImageAndCaption(imageSelector, textSelector, index) {
+  imageSelector.src = item.galleryImgs[index].image;
+  textSelector.textContent = item.galleryImgs[index].caption;
+}
+
+function updatePlayerWeapon(player, weaponCache = item.defaultWeapon, id = 13) {
+  const weaponProperty = {};
+  for (const weapon of weaponCache) {
+    if (weapon.id === id) {
+      weaponProperty.domId = `weapon${id}`;
+      weaponProperty.image = weapon.weaponUrl;
+      weaponProperty.name = weapon.name;
+      weaponProperty.description = weapon.description;
+      weaponProperty.damage = weapon.damage;
+      player.weaponId = id;
+    }
+  }
+  return weaponProperty;
 }
