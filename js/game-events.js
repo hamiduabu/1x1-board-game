@@ -5,15 +5,12 @@ import * as item from './game-items.js';
 import { Player } from './game-prototypes.js';
 import { Board } from './game-prototypes.js';
 
-// Display Player Options
 export function managePlayerOptions() {
-  document.addEventListener('click', function(event) {
-    if (event.target === game.playerOptionsBtn) {
-      game.playerOptionsModal.classList.add('modal-display');
-    }
-    if (event.target === game.playerOptionsCancelBtn) {
-      game.closeModal(game.playerOptionsModal);
-    }
+  game.playerOptionsBtn.on('click', function() {
+    game.playerOptionsModal.addClass('modal-display');
+  });
+  game.playerOptionsCancelBtn.on('click', function() {
+    game.closeModal(game.playerOptionsModal);
   });
 }
 
@@ -24,8 +21,6 @@ export function startGame() {
   game.startGameBtn.addEventListener('click', () => {
     console.log('Starting ...');
     //Get player details
-    // Consider using destructuring below
-    // const [playerOne, playerTwo] = getPlayerDetails();
     const players = getInitialPlayerDetails();
     const [playerOne, playerTwo] = players;
 
@@ -123,15 +118,11 @@ export function startGame() {
     ]);
 
     // Display Heading
-    const combatants = document.querySelector('#combatants');
-    combatants.textContent = `${playerOne.name} VS ${playerTwo.name}`;
-
-    // Player Boxes
+    game.combatants.textContent = `${playerOne.name} VS ${playerTwo.name}`;
 
     // Display player Stats
 
     // Player Avatar and name
-
     playerBox.playerOneImg.src = playerOne.mainImgUrl;
     playerBox.playerTwoImg.src = playerTwo.mainImgUrl;
 
@@ -139,7 +130,6 @@ export function startGame() {
     playerBox.playerTwoName.textContent = `${playerTwo.name}`;
 
     // Health Points
-
     playerBox.playerOneHpValue.textContent = '100';
     playerBox.playerTwoHpValue.textContent = '100';
 
@@ -160,20 +150,14 @@ export function startGame() {
     ] = Object.values(updatePlayerWeapon(playerTwo));
 
     // append to dom
-    document.querySelector('.game-board-container').appendChild(boardFragment);
-
-    const boxOneFragment = document.createDocumentFragment();
-
-    // console.log(playerTwo);
-    // console.log(playerOne);
-    return { players };
+    game.gameBoardContainer.appendChild(boardFragment);
   });
 }
 
-/*
- ***
+// Create initial active/authorized movement squares
+/**
+ * @param {DocumentFragment} domObject
  */
-
 function setInitialActiveSquares(domObject) {
   const player1 = domObject.querySelector('#player1');
   const player2 = domObject.querySelector('#player2');
@@ -565,9 +549,7 @@ function savePositions(player) {
 function checkForBattleCondition(validAdjacentSquares) {
   for (const square of validAdjacentSquares) {
     if (square.children.player1 || square.children.player2) {
-      game.gameBoardContainer.removeChild(
-        document.querySelector('.game-board')
-      );
+      game.gameBoardContainer.removeChild(game.gameBoard());
       return startBattle();
     }
   }
@@ -649,8 +631,10 @@ function createAttack(turn = 1) {
           playerTwo.avatar.classList.remove('active-shooter');
           playerBox.playerTwoImg.classList.add('left-shield-up');
           turn = 1;
+          checkWinCondition(turn, playerOne, playerTwo, 0)
         }
       });
+
     }
   );
 
@@ -726,45 +710,12 @@ function updateHealthMeter(fromPlayer, toPlayer, damage, turn) {
     toPlayer.healthMeter.textContent = toPlayer.health;
   }, 1500);
 
-  setTimeout(() => {
-    if (turn === 1 && toPlayer.health <= 0 && fromPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner');
-      document.querySelector(
-        '#winner-details h1'
-      ).textContent = `${toPlayer.name} - DRAWS WITH - ${fromPlayer.name}`;
-      document.querySelector('#winner-details img#winner-one').src =
-        toPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-one')
-        .classList.remove('hide');
-      document.querySelector('#winner-details img#winner-two').src =
-        fromPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-two')
-        .classList.remove('hide');
-    } else if (turn === 1 && toPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner');
-      document.querySelector('#winner-details h1').textContent =
-        fromPlayer.name + ' Wins';
-      document.querySelector('#winner-details img#winner-two').src =
-        fromPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-two')
-        .classList.remove('hide');
-    } else if (turn === 1 && fromPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner');
-      document.querySelector('#winner-details h1').textContent =
-        toPlayer.name + ' Wins';
-      document.querySelector('#winner-details img#winner-one').src =
-        toPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-one')
-        .classList.remove('hide');
-    }
-  }, 1500);
+  checkWinCondition(turn, toPlayer, fromPlayer, 1500);
 
   gameReload();
 }
+
+
 
 function gameReload() {
   const homeBtn = document.querySelector('#game-over');
@@ -811,14 +762,12 @@ export function startSlideShow() {
   });
   game.gallery.addEventListener('mouseover', event => {
     clearInterval(imageInterval);
-    // game.galleryImg.classList.add('zoom');
     game.galleryImgCaption.classList.add('invisible');
   });
   game.gallery.addEventListener('mouseout', event => {
     imageInterval = setInterval(() => {
       switchImages(indexFromImageIndexRange);
     }, 7000);
-    // game.galleryImg.classList.remove('zoom');
     game.galleryImgCaption.classList.remove('invisible');
   });
 }
@@ -859,4 +808,43 @@ function updatePlayerWeapon(player, weaponCache = item.defaultWeapon, id = 13) {
     }
   }
   return weaponProperty;
+}
+
+function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
+  setTimeout(() => {
+    if (turn === 1 && toPlayer.health <= 0 && fromPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner');
+      document.querySelector('#winner-details h1').textContent = `${toPlayer.name} - DRAWS WITH - ${fromPlayer.name}`;
+      document.querySelector('#winner-details img#winner-one').src =
+        toPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-one')
+        .classList.remove('hide');
+      document.querySelector('#winner-details img#winner-two').src =
+        fromPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-two')
+        .classList.remove('hide');
+    }
+    else if (turn === 1 && toPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner');
+      document.querySelector('#winner-details h1').textContent =
+        fromPlayer.name + ' Wins';
+      document.querySelector('#winner-details img#winner-two').src =
+        fromPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-two')
+        .classList.remove('hide');
+    }
+    else if (turn === 1 && fromPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner');
+      document.querySelector('#winner-details h1').textContent =
+        toPlayer.name + ' Wins';
+      document.querySelector('#winner-details img#winner-one').src =
+        toPlayer.avatarImg;
+      document
+        .querySelector('#winner-details img#winner-one')
+        .classList.remove('hide');
+    }
+  }, delay);
 }

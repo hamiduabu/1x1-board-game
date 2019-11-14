@@ -1,26 +1,43 @@
+import './jquery-3.4.1.js';
+
+// General DOM variables
 export const game = {
-  landingPage: document.querySelector('.landing-container'),
-  gameContainer: document.querySelector('.game-container'),
-  playerOptionsBtn: document.querySelector('button.game-btn'),
+  landingPage: $('.landing-container'),
+  gameContainer: $('.game-container'),
+
+  playerOptionsBtn: $('button.game-btn'),
+  playerOptionsCancelBtn: $('button.close-btn'),
+  playerOptionsModal: $('section.modal.player-input'),
+
   gallery: document.querySelector('.gallery figure'),
   galleryImg: document.querySelector('.gallery figure img'),
   galleryImgCaption: document.querySelector('.gallery figure figcaption'),
-  playerOptionsModal: document.querySelector('section.modal.player-input'),
+
   gameBoardContainer: document.querySelector('.game-board-container'),
+  combatants: document.querySelector('#combatants'),
   gameBoardBattle: document.querySelector('.battle-zone'),
-  playerOptionsCancelBtn: document.querySelector('button.close-btn'),
+
   avatarImgs: document.querySelectorAll('.avatar-options img'),
   playerOneNameInput: document.querySelector('#player-one'),
   playerTwoNameInput: document.querySelector('#player-two'),
+
+  startGameBtn: document.querySelector('#start-game'),
+  playerInputForm: document.querySelector('form'),
+
+  errorMsg: document.querySelector('.error-msg'),
+
+  shieldAlert: document.querySelector('.shield-alert'),
+
+  gameBoard: function() {
+    return this.gameBoardContainer.querySelector('.game-board');
+  },
   playerOneAvatarSelect: function() {
     return document.querySelector('.player1 .avatar-options input:checked');
   },
   playerTwoAvatarSelect: function() {
     return document.querySelector('.player2 .avatar-options input:checked');
   },
-  startGameBtn: document.querySelector('#start-game'),
-  playerInputForm: document.querySelector('form'),
-  errorMsg: document.querySelector('.error-msg'),
+
   toggleError: function() {
     this.errorMsg.classList.remove('hide');
     this.errorMsg.classList.remove('invisible');
@@ -31,7 +48,6 @@ export const game = {
       this.errorMsg.classList.add('hide');
     }, 2000);
   },
-  shieldAlert: document.querySelector('.shield-alert'),
   toggleShieldAlert: function() {
     this.shieldAlert.classList.remove('hide');
     this.shieldAlert.classList.remove('invisible');
@@ -43,17 +59,17 @@ export const game = {
     }, 2000);
   },
   clearScreen: function() {
-    this.landingPage.classList.add('hide');
-    this.gameContainer.classList.remove('hide');
-    // this.modalCloseBtn.click();
+    this.landingPage.addClass('hide');
+    this.gameContainer.removeClass('hide');
   },
   closeModal: function(modal) {
-    modal.classList.remove('modal-display');
+    modal.removeClass('modal-display');
   },
   playerBoxOne: document.querySelector('.player-box-1'),
   playerBoxTwo: document.querySelector('.player-box-2')
 };
 
+// Variables about players information
 export const playerBox = {
   playerOneImg: game.playerBoxOne.querySelector('#avatar1'),
   playerTwoImg: game.playerBoxTwo.querySelector('#avatar2'),
