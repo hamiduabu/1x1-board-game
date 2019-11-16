@@ -24,6 +24,10 @@ export const game = {
   startGameBtn: document.querySelector('#start-game'),
   playerInputForm: document.querySelector('form'),
 
+  playerOneScreenKeysContainer: $('.onscreen-keys-one'),
+  playerTwoScreenKeysContainer: $('.onscreen-keys-two'),
+  onScreenKeys: $('.player-keys button'),
+
   errorMsg: document.querySelector('.error-msg'),
 
   shieldAlert: document.querySelector('.shield-alert'),
@@ -38,7 +42,7 @@ export const game = {
     return document.querySelector('.player2 .avatar-options input:checked');
   },
 
-  toggleError: function() {
+  toggleMovementError: function() {
     this.errorMsg.classList.remove('hide');
     this.errorMsg.classList.remove('invisible');
     setTimeout(() => {

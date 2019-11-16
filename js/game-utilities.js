@@ -132,12 +132,15 @@ export function getElementPresentPositionIndex(element) {
   return positionIndex;
 }
 
-export function highlightAvailableSquares(squares) {
+export function highlightAvailableSquares(
+  squares,
+  highlightClass = 'available-move-player-one'
+) {
   if (squares.length <= 0) {
     return;
   }
   for (const square of squares) {
-    square.classList.add('available-move');
+    square.classList.add(highlightClass);
   }
 }
 

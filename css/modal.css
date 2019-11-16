@@ -157,7 +157,7 @@ label[for="player-two"] {
   background-color: hsla(120, 100%, 25%, 0.5);
 }
 
-.winner {
+.winner-modal {
   opacity: 1;
   pointer-events: auto;
   display: flex;
@@ -166,7 +166,7 @@ label[for="player-two"] {
   align-items: center;
 }
 
-.winner .modal-content {
+.winner-modal .modal-content {
   display: flex;
   flex-direction: column;
   justify-content: center;

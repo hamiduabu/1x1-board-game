@@ -109,6 +109,8 @@ export function startGame() {
       player1,
       player2
     } = setInitialActiveSquares(boardFragment);
+
+    // highlight initial available squares
     utils.highlightAvailableSquares(availableSquares);
 
     // Add movements
@@ -162,7 +164,8 @@ function setInitialActiveSquares(domObject) {
   const player1 = domObject.querySelector('#player1');
   const player2 = domObject.querySelector('#player2');
   const playerTurn = player1;
-  playerTurn.classList.add('active-player');
+
+  playerTurn.classList.add('active-player-one');
   const availableSquares = [
     ...saveAvailableSquaresRight(playerTurn),
     ...saveAvailableSquaresLeft(playerTurn),
@@ -238,6 +241,7 @@ function manageMovements(
   availableSquares,
   weapons
 ) {
+  // let activePlayerClass;
   let numberOfTurns = 0;
   let allowedKeys = [
     'ArrowUp',
@@ -246,123 +250,202 @@ function manageMovements(
     'ArrowLeft',
     'Space'
   ];
+  let allowedOnScreenButtonKeyIds = [
+    'player-one-up-key',
+    'player-one-left-key',
+    'player-one-right-key',
+    'player-one-down-key',
+    'player-two-up-key',
+    'player-two-left-key',
+    'player-two-right-key',
+    'player-two-down-key'
+  ];
 
-  document.addEventListener('keydown', function keyDownEvent(event) {
+  document.addEventListener('keydown', function moveWithKeyboardArrowKeys(
+    event
+  ) {
+    // No allowed keys and available moves in Battle mode
     if (game.gameBoardContainer.childElementCount === 0) {
       allowedKeys = [];
     }
     if (!allowedKeys.includes(event.key)) {
       return event.preventDefault();
     }
+    // Clear available squares for next move
     for (const square of availableSquares) {
-      square.classList.remove('available-move');
+      square.classList.remove(
+        'available-move-player-one',
+        'available-move-player-two'
+      );
     }
     availableSquares = [];
 
+    // Keyboard Movements
     if (event.code === 'ArrowUp') {
-      const topSquare =
-        playerTurn.parentElement.parentElement.previousElementSibling;
-      if (!topSquare) {
-        return game.toggleError();
+      if (move().illegalMoveUp(playerTurn)) {
+        return game.toggleMovementError();
       }
-      if (
-        topSquare.children[
-          utils.getElementPresentPositionIndex(playerTurn)
-        ].classList.contains('inactive')
-      ) {
-        return game.toggleError();
-      }
-      topSquare.children[
-        utils.getElementPresentPositionIndex(playerTurn)
-      ].appendChild(playerTurn);
+      move().moveUp(playerTurn);
       numberOfTurns += 1;
     }
     if (event.code === 'ArrowDown') {
-      const bottomSquare =
-        playerTurn.parentElement.parentElement.nextElementSibling;
-      if (!bottomSquare) {
-        return game.toggleError();
+      if (move().illegalMoveDown(playerTurn)) {
+        return game.toggleMovementError();
       }
-      if (
-        bottomSquare.children[
-          utils.getElementPresentPositionIndex(playerTurn)
-        ].classList.contains('inactive')
-      ) {
-        return game.toggleError();
-      }
-      bottomSquare.children[
-        utils.getElementPresentPositionIndex(playerTurn)
-      ].appendChild(playerTurn);
+      move().moveDown(playerTurn);
+
       numberOfTurns += 1;
     }
     if (event.code === 'ArrowLeft') {
-      const leftSquare = playerTurn.parentElement.previousElementSibling;
-      if (!leftSquare || leftSquare.classList.contains('inactive')) {
-        return game.toggleError();
+      if (move().illegalMoveLeft(playerTurn)) {
+        return game.toggleMovementError();
       }
-      leftSquare.appendChild(playerTurn);
+      move().moveLeft(playerTurn);
       numberOfTurns += 1;
     }
     if (event.code === 'ArrowRight') {
-      const rightSquare = playerTurn.parentElement.nextElementSibling;
-      if (!rightSquare || rightSquare.classList.contains('inactive')) {
-        return game.toggleError();
+      if (move().illegalMoveRight(playerTurn)) {
+        return game.toggleMovementError();
       }
-      rightSquare.appendChild(playerTurn);
+      move().moveRight(playerTurn);
       numberOfTurns += 1;
     }
-    if (numberOfTurns === 3) {
-      playerTurn.classList.remove('active-player');
-      playerTurn = player2;
-      playerTurn.classList.add('active-player');
-    }
-
-    if (numberOfTurns >= 3 && numberOfTurns <= 6) {
-      playerTurn = player2;
-    }
-
-    if (numberOfTurns === 6) {
-      playerTurn.classList.remove('active-player');
-      numberOfTurns = 0;
-      playerTurn = player1;
-      playerTurn.classList.add('active-player');
-    }
+    // object literal destructuring assignment without a declaration
+    ({ numberOfTurns, playerTurn } = manageActivePlayerState(
+      numberOfTurns,
+      playerTurn,
+      player2,
+      player1
+    ));
 
     // Switch Weapons
-    let presentPlayer;
-    if (numberOfTurns > 0 && numberOfTurns <= 3) {
-      presentPlayer = player1;
-    } else {
-      presentPlayer = player2;
+    switchWeapons(numberOfTurns, player1, player2, players, weapons);
+  });
+
+  game.onScreenKeys.click(function moveWithOnScreenArrowKeys(event) {
+    if (game.gameBoardContainer.childElementCount === 0) {
+      allowedOnScreenButtonKeyIds = [];
     }
-    const presentPlayerSquare = presentPlayer.parentElement;
-    if (
-      presentPlayerSquare.firstElementChild.classList.contains(
-        'weapon-board-img'
-      )
-    ) {
-      const newWeaponId = utils.extractNumbers(
-        presentPlayerSquare.firstElementChild.id
+    if (!allowedOnScreenButtonKeyIds.includes(event.target.id)) {
+      return;
+    }
+    for (const square of availableSquares) {
+      square.classList.remove(
+        'available-move-player-one',
+        'available-move-player-two'
       );
-      const [playerOne, playerTwo] = players;
-      if (presentPlayer === player1) {
-        switchWeapon(
-          playerOne,
-          'playerOne',
-          newWeaponId,
-          weapons,
-          presentPlayerSquare
-        );
-      } else {
-        switchWeapon(
-          playerTwo,
-          'playerTwo',
-          newWeaponId,
-          weapons,
-          presentPlayerSquare
-        );
+    }
+    // availableSquares = [];
+    // Player One Movements using on screen keys
+    if (playerTurn === player1) {
+      // Move up
+      if (event.target.id === 'player-one-up-key') {
+        if (move().illegalMoveUp(player1)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(availableSquares);
+        }
+        move().moveUp(player1);
+        numberOfTurns += 1;
+      }
+      // Move down
+      if (event.target.id === 'player-one-down-key') {
+        if (move().illegalMoveDown(player1)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(availableSquares);
+        }
+        move().moveDown(player1);
+
+        numberOfTurns += 1;
+      }
+      // Move Left
+      if (event.target.id === 'player-one-left-key') {
+        if (move().illegalMoveLeft(player1)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(availableSquares);
+        }
+        move().moveLeft(player1);
+        numberOfTurns += 1;
+      }
+      // Move right
+      if (event.target.id === 'player-one-right-key') {
+        if (move().illegalMoveRight(player1)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(availableSquares);
+        }
+        move().moveRight(player1);
+        numberOfTurns += 1;
+      }
+
+      // Player Two Movements using on screen keys
+    } else if (playerTurn === player2) {
+      // Move up
+      if (event.target.id === 'player-two-up-key') {
+        if (move().illegalMoveUp(player2)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(
+            availableSquares,
+            'available-move-player-two'
+          );
+        }
+        move().moveUp(player2);
+        numberOfTurns += 1;
+      }
+      // Move down
+      if (event.target.id === 'player-two-down-key') {
+        if (move().illegalMoveDown(player2)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(
+            availableSquares,
+            'available-move-player-two'
+          );
+        }
+        move().moveDown(player2);
+
+        numberOfTurns += 1;
+      }
+      // Move Left
+      if (event.target.id === 'player-two-left-key') {
+        if (move().illegalMoveLeft(player2)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(
+            availableSquares,
+            'available-move-player-two'
+          );
+        }
+        move().moveLeft(player2);
+        numberOfTurns += 1;
+      }
+      // Move right
+      if (event.target.id === 'player-two-right-key') {
+        if (move().illegalMoveRight(player2)) {
+          game.toggleMovementError();
+          return utils.highlightAvailableSquares(
+            availableSquares,
+            'available-move-player-two'
+          );
+        }
+        move().moveRight(player2);
+        numberOfTurns += 1;
       }
     }
+
+    ({ numberOfTurns, playerTurn } = manageActivePlayerState(
+      numberOfTurns,
+      playerTurn,
+      player2,
+      player1
+    ));
+
+    // Switch Weapons (on screen keys)
+    switchWeapons(numberOfTurns, player1, player2, players, weapons);
+
+    // Manage turns save and highlight new available squares -
+    // and check if battle condition is fulfilled (on screen keys)
+    availableSquares = manageAfterMovementConditions(
+      availableSquares,
+      playerTurn,
+      numberOfTurns
+    );
   });
 
   document.addEventListener('keyup', function keyUpEvent(event) {
@@ -372,38 +455,175 @@ function manageMovements(
     if (!allowedKeys.includes(event.key)) {
       return event.preventDefault();
     }
-    availableSquares = [
-      ...saveAvailableSquaresTop(playerTurn, numberOfTurns),
-      ...saveAvailableSquaresDown(playerTurn, numberOfTurns),
-      ...saveAvailableSquaresRight(playerTurn, numberOfTurns),
-      ...saveAvailableSquaresLeft(playerTurn, numberOfTurns)
-    ];
-    //
-    const adjacentSquares = [
-      saveAvailableSquaresTop(playerTurn)[0],
-      saveAvailableSquaresDown(playerTurn)[0],
-      saveAvailableSquaresRight(playerTurn)[0],
-      saveAvailableSquaresLeft(playerTurn)[0]
-    ];
 
-    const validAdjacentSquares = getValidSquares(adjacentSquares);
-
-    checkForBattleCondition(validAdjacentSquares);
-
-    utils.highlightAvailableSquares(availableSquares);
+    // Manage turns save and highlight new available squares
+    // and check if battle condition is fulfilled
+    availableSquares = manageAfterMovementConditions(
+      availableSquares,
+      playerTurn,
+      numberOfTurns
+    );
   });
 }
 
-function switchWeapon(
+function manageAfterMovementConditions(
+  availableSquares,
+  playerTurn,
+  numberOfTurns
+) {
+  availableSquares = [
+    ...saveAvailableSquaresTop(playerTurn, numberOfTurns),
+    ...saveAvailableSquaresDown(playerTurn, numberOfTurns),
+    ...saveAvailableSquaresRight(playerTurn, numberOfTurns),
+    ...saveAvailableSquaresLeft(playerTurn, numberOfTurns)
+  ];
+  //
+  const adjacentSquares = [
+    saveAvailableSquaresTop(playerTurn)[0],
+    saveAvailableSquaresDown(playerTurn)[0],
+    saveAvailableSquaresRight(playerTurn)[0],
+    saveAvailableSquaresLeft(playerTurn)[0]
+  ];
+  const validAdjacentSquares = getValidSquares(adjacentSquares);
+  checkForBattleCondition(validAdjacentSquares);
+  if (numberOfTurns >= 3 && numberOfTurns <= 6) {
+    utils.highlightAvailableSquares(
+      availableSquares,
+      'available-move-player-two'
+    );
+  } else {
+    utils.highlightAvailableSquares(availableSquares);
+  }
+
+  return availableSquares;
+}
+
+function manageActivePlayerState(numberOfTurns, playerTurn, player2, player1) {
+  if (numberOfTurns === 3) {
+    playerTurn.classList.remove('active-player-one');
+    playerTurn = player2;
+    playerTurn.classList.add('active-player-two');
+  }
+  if (numberOfTurns >= 3 && numberOfTurns <= 6) {
+    playerTurn = player2;
+  }
+  if (numberOfTurns === 6) {
+    playerTurn.classList.remove('active-player-two');
+    playerTurn = player1;
+    playerTurn.classList.add('active-player-one');
+    numberOfTurns = 0;
+  }
+  return { numberOfTurns, playerTurn };
+}
+
+function move() {
+  return {
+    illegalMoveRight: function(player) {
+      return (
+        !getMovement(player).getRightSquare() ||
+        getMovement(player)
+          .getRightSquare()
+          .classList.contains('inactive')
+      );
+    },
+
+    illegalMoveLeft: function(player) {
+      return (
+        !getMovement(player).getLeftSquare() ||
+        getMovement(player)
+          .getLeftSquare()
+          .classList.contains('inactive')
+      );
+    },
+
+    illegalMoveDown: function(player) {
+      return (
+        !getMovement(player).getBottomRow() ||
+        getMovement(player)
+          .getBottomSquare()
+          .classList.contains('inactive')
+      );
+    },
+
+    illegalMoveUp: function(player) {
+      return (
+        !getMovement(player).getTopRow() ||
+        getMovement(player)
+          .getTopSquare()
+          .classList.contains('inactive')
+      );
+    },
+    moveRight: function(player) {
+      getMovement(player)
+        .getRightSquare()
+        .appendChild(player);
+    },
+
+    moveLeft: function(player) {
+      getMovement(player)
+        .getLeftSquare()
+        .appendChild(player);
+    },
+
+    moveDown: function(player) {
+      getMovement(player)
+        .getBottomSquare()
+        .appendChild(player);
+    },
+
+    moveUp: function(player) {
+      getMovement(player)
+        .getTopSquare()
+        .appendChild(player);
+    }
+  };
+}
+
+function switchWeapons(numberOfTurns, player1, player2, players, weapons) {
+  let presentPlayer;
+  if (numberOfTurns > 0 && numberOfTurns <= 3) {
+    presentPlayer = player1;
+  } else {
+    presentPlayer = player2;
+  }
+  const presentPlayerSquare = presentPlayer.parentElement;
+  if (
+    presentPlayerSquare.firstElementChild.classList.contains('weapon-board-img')
+  ) {
+    const newWeaponId = utils.extractNumbers(
+      presentPlayerSquare.firstElementChild.id
+    );
+    const [playerOne, playerTwo] = players;
+    if (presentPlayer === player1) {
+      pickNewWeapon(
+        playerOne,
+        'playerOne',
+        newWeaponId,
+        weapons,
+        presentPlayerSquare
+      );
+    } else {
+      pickNewWeapon(
+        playerTwo,
+        'playerTwo',
+        newWeaponId,
+        weapons,
+        presentPlayerSquare
+      );
+    }
+  }
+}
+
+function pickNewWeapon(
   playerObject,
   playerString,
   newWeaponId,
   weaponsCache,
   presentPlayerSquare
 ) {
-  const currentPlayer = playerObject;
+  // const currentPlayer = playerObject;
   const oldWeaponId = playerObject.weaponId;
-  currentPlayer.weaponId = newWeaponId;
+  playerObject.weaponId = newWeaponId;
   [
     playerBox[`${playerString}WeaponImg`].id,
     playerBox[`${playerString}WeaponImg`].src,
@@ -411,7 +631,7 @@ function switchWeapon(
     playerBox[`${playerString}WeaponDesc`].textContent,
     playerBox[`${playerString}WeaponAp`].textContent
   ] = Object.values(
-    updatePlayerWeapon(currentPlayer, weaponsCache, newWeaponId)
+    updatePlayerWeapon(playerObject, weaponsCache, newWeaponId)
   );
   dropOldWeapon(weaponsCache, oldWeaponId, presentPlayerSquare);
 }
@@ -550,6 +770,8 @@ function checkForBattleCondition(validAdjacentSquares) {
   for (const square of validAdjacentSquares) {
     if (square.children.player1 || square.children.player2) {
       game.gameBoardContainer.removeChild(game.gameBoard());
+      game.playerOneScreenKeysContainer.addClass('hide');
+      game.playerTwoScreenKeysContainer.addClass('hide');
       return startBattle();
     }
   }
@@ -579,7 +801,7 @@ function dropOldWeapon(weapons, oldWeaponId, presentPlayerSquare) {
 // Battle
 function startBattle() {
   game.gameBoardBattle.style.backgroundImage =
-    'url("/assets/bg-img/battle-bg-light.png")';
+    'url("assets/bg-img/battle-bg-light.png")';
   game.gameBoardBattle.classList.remove('hide');
   playerBox.playerOneWeapon.classList.add('player-one-battle-mode');
   playerBox.playerTwoWeapon.classList.add('player-two-battle-mode');
@@ -631,10 +853,9 @@ function createAttack(turn = 1) {
           playerTwo.avatar.classList.remove('active-shooter');
           playerBox.playerTwoImg.classList.add('left-shield-up');
           turn = 1;
-          checkWinCondition(turn, playerOne, playerTwo, 0)
+          checkWinCondition(turn, playerOne, playerTwo, 0);
         }
       });
-
     }
   );
 
@@ -714,8 +935,6 @@ function updateHealthMeter(fromPlayer, toPlayer, damage, turn) {
 
   gameReload();
 }
-
-
 
 function gameReload() {
   const homeBtn = document.querySelector('#game-over');
@@ -813,8 +1032,10 @@ function updatePlayerWeapon(player, weaponCache = item.defaultWeapon, id = 13) {
 function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
   setTimeout(() => {
     if (turn === 1 && toPlayer.health <= 0 && fromPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner');
-      document.querySelector('#winner-details h1').textContent = `${toPlayer.name} - DRAWS WITH - ${fromPlayer.name}`;
+      document.querySelector('#winner-details').classList.add('winner-modal');
+      document.querySelector(
+        '#winner-details h1'
+      ).textContent = `${toPlayer.name} - DRAWS WITH - ${fromPlayer.name}`;
       document.querySelector('#winner-details img#winner-one').src =
         toPlayer.avatarImg;
       document
@@ -825,9 +1046,8 @@ function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
       document
         .querySelector('#winner-details img#winner-two')
         .classList.remove('hide');
-    }
-    else if (turn === 1 && toPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner');
+    } else if (turn === 1 && toPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner-modal');
       document.querySelector('#winner-details h1').textContent =
         fromPlayer.name + ' Wins';
       document.querySelector('#winner-details img#winner-two').src =
@@ -835,9 +1055,8 @@ function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
       document
         .querySelector('#winner-details img#winner-two')
         .classList.remove('hide');
-    }
-    else if (turn === 1 && fromPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner');
+    } else if (turn === 1 && fromPlayer.health <= 0) {
+      document.querySelector('#winner-details').classList.add('winner-modal');
       document.querySelector('#winner-details h1').textContent =
         toPlayer.name + ' Wins';
       document.querySelector('#winner-details img#winner-one').src =
@@ -847,4 +1066,33 @@ function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
         .classList.remove('hide');
     }
   }, delay);
+}
+
+function getMovement(player) {
+  // const leftSquare = player.parentElement.previousElementSibling;
+  // const rightSquare = player.parentElement.nextElementSibling;
+  return {
+    getTopRow: function() {
+      return player.parentElement.parentElement.previousElementSibling;
+    },
+    getTopSquare: function() {
+      return this.getTopRow().children[
+        utils.getElementPresentPositionIndex(player)
+      ];
+    },
+    getBottomRow: function() {
+      return player.parentElement.parentElement.nextElementSibling;
+    },
+    getBottomSquare: function() {
+      return this.getBottomRow().children[
+        utils.getElementPresentPositionIndex(player)
+      ];
+    },
+    getLeftSquare: function() {
+      return player.parentElement.previousElementSibling;
+    },
+    getRightSquare: function() {
+      return player.parentElement.nextElementSibling;
+    }
+  };
 }
