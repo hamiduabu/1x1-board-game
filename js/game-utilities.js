@@ -36,15 +36,26 @@ export function extractNumbers(str) {
 }
 
 export function getPlayerName(playerDomNode) {
-  return playerDomNode.value === ''
-    ? playerDomNode.placeholder
-    : playerDomNode.value;
+  return playerDomNode.val() === ''
+    ? playerDomNode.attr('placeholder')
+    : playerDomNode.val();
 }
 
+// export function getPlayerAvatarDetails(playerSelection, arr) {
+//   const playerOptions = {};
+//   for (const obj of arr) {
+//     if (extractNumbers(playerSelection.id) === obj.id) {
+//       playerOptions.avatarId = obj.id;
+//       playerOptions.mainImgUrl = obj.imgUrl;
+//       playerOptions.miniImgUrl = obj.miniImgUrl;
+//     }
+//   }
+//   return playerOptions;
+// }
 export function getPlayerAvatarDetails(playerSelection, arr) {
   const playerOptions = {};
   for (const obj of arr) {
-    if (extractNumbers(playerSelection.id) === obj.id) {
+    if (extractNumbers(playerSelection.attr('id')) === obj.id) {
       playerOptions.avatarId = obj.id;
       playerOptions.mainImgUrl = obj.imgUrl;
       playerOptions.miniImgUrl = obj.miniImgUrl;

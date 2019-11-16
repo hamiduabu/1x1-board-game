@@ -9,57 +9,57 @@ export const game = {
   playerOptionsCancelBtn: $('button.close-btn'),
   playerOptionsModal: $('section.modal.player-input'),
 
-  gallery: document.querySelector('.gallery figure'),
-  galleryImg: document.querySelector('.gallery figure img'),
-  galleryImgCaption: document.querySelector('.gallery figure figcaption'),
+  gallery: $('.gallery figure'),
+  galleryImg: $('.gallery figure img'),
+  galleryImgCaption: $('.gallery figure figcaption'),
 
-  gameBoardContainer: document.querySelector('.game-board-container'),
-  combatants: document.querySelector('#combatants'),
-  gameBoardBattle: document.querySelector('.battle-zone'),
+  gameBoardContainer: $('.game-board-container'),
+  combatants: $('#combatants'),
+  gameBoardBattle: $('.battle-zone'),
 
-  avatarImgs: document.querySelectorAll('.avatar-options img'),
-  playerOneNameInput: document.querySelector('#player-one'),
-  playerTwoNameInput: document.querySelector('#player-two'),
+  avatarImgs: $('.avatar-options img'),
+  playerOneNameInput: $('#player-one'),
+  playerTwoNameInput: $('#player-two'),
+  playerInputForm: $('form'),
 
-  startGameBtn: document.querySelector('#start-game'),
-  playerInputForm: document.querySelector('form'),
+  startGameBtn: $('#start-game'),
 
   playerOneScreenKeysContainer: $('.onscreen-keys-one'),
   playerTwoScreenKeysContainer: $('.onscreen-keys-two'),
   onScreenKeys: $('.player-keys button'),
 
-  errorMsg: document.querySelector('.error-msg'),
+  movementErrorMsg: $('.error-msg'),
 
-  shieldAlert: document.querySelector('.shield-alert'),
+  shieldAlert: $('.shield-alert'),
 
   gameBoard: function() {
-    return this.gameBoardContainer.querySelector('.game-board');
+    return this.gameBoardContainer.find('.game-board');
   },
   playerOneAvatarSelect: function() {
-    return document.querySelector('.player1 .avatar-options input:checked');
+    return $('.player1 .avatar-options input:checked');
   },
   playerTwoAvatarSelect: function() {
-    return document.querySelector('.player2 .avatar-options input:checked');
+    return $('.player2 .avatar-options input:checked');
   },
 
   toggleMovementError: function() {
-    this.errorMsg.classList.remove('hide');
-    this.errorMsg.classList.remove('invisible');
+    this.movementErrorMsg.removeClass('hide');
+    this.movementErrorMsg.removeClass('invisible');
     setTimeout(() => {
-      this.errorMsg.classList.add('invisible');
+      this.movementErrorMsg.addClass('invisible');
     }, 1000);
     setTimeout(() => {
-      this.errorMsg.classList.add('hide');
+      this.movementErrorMsg.addClass('hide');
     }, 2000);
   },
   toggleShieldAlert: function() {
-    this.shieldAlert.classList.remove('hide');
-    this.shieldAlert.classList.remove('invisible');
+    this.shieldAlert.removeClass('hide');
+    this.shieldAlert.removeClass('invisible');
     setTimeout(() => {
-      this.shieldAlert.classList.add('invisible');
+      this.shieldAlert.addClass('invisible');
     }, 1000);
     setTimeout(() => {
-      this.shieldAlert.classList.add('hide');
+      this.shieldAlert.addClass('hide');
     }, 2000);
   },
   clearScreen: function() {

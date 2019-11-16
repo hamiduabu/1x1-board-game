@@ -179,7 +179,7 @@
 }
 
 .projectile {
-  width: 50px;
+  width: 31.5%;
   opacity: 0;
   position: absolute;
   left: 50%;
@@ -195,12 +195,12 @@
 }
 
 .attack-right {
-  transform: translateX(950px) rotate(2160deg);
+  transform: translateX(2500%) rotate(2160deg);
   transition: 1.5s linear;
 }
 
 .attack-left {
-  transform: translateX(-950px) rotate(-2160deg);
+  transform: translateX(-2500%) rotate(-2160deg);
   transition: 1.5s linear;
 }
 

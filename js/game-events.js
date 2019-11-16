@@ -18,14 +18,14 @@ export function managePlayerOptions() {
 
 // Modal events
 export function startGame() {
-  game.startGameBtn.addEventListener('click', () => {
+  game.startGameBtn.on('click', () => {
     console.log('Starting ...');
     //Get player details
     const players = getInitialPlayerDetails();
     const [playerOne, playerTwo] = players;
 
     // Reset Modal Form
-    game.playerInputForm.reset();
+    game.playerInputForm.trigger('reset');
 
     // Hide landing page and modal
     game.closeModal(game.playerOptionsModal);
@@ -120,7 +120,7 @@ export function startGame() {
     ]);
 
     // Display Heading
-    game.combatants.textContent = `${playerOne.name} VS ${playerTwo.name}`;
+    game.combatants.text(`${playerOne.name} VS ${playerTwo.name}`);
 
     // Display player Stats
 
@@ -152,7 +152,7 @@ export function startGame() {
     ] = Object.values(updatePlayerWeapon(playerTwo));
 
     // append to dom
-    game.gameBoardContainer.appendChild(boardFragment);
+    game.gameBoardContainer.append(boardFragment);
   });
 }
 
@@ -265,7 +265,7 @@ function manageMovements(
     event
   ) {
     // No allowed keys and available moves in Battle mode
-    if (game.gameBoardContainer.childElementCount === 0) {
+    if (game.gameBoardContainer.children().length === 0) {
       allowedKeys = [];
     }
     if (!allowedKeys.includes(event.key)) {
@@ -323,7 +323,7 @@ function manageMovements(
   });
 
   game.onScreenKeys.click(function moveWithOnScreenArrowKeys(event) {
-    if (game.gameBoardContainer.childElementCount === 0) {
+    if (game.gameBoardContainer.children.length === 0) {
       allowedOnScreenButtonKeyIds = [];
     }
     if (!allowedOnScreenButtonKeyIds.includes(event.target.id)) {
@@ -449,7 +449,7 @@ function manageMovements(
   });
 
   document.addEventListener('keyup', function keyUpEvent(event) {
-    if (game.gameBoardContainer.childElementCount === 0) {
+    if (game.gameBoardContainer.children.length === 0) {
       allowedKeys = [];
     }
     if (!allowedKeys.includes(event.key)) {
@@ -769,7 +769,7 @@ function savePositions(player) {
 function checkForBattleCondition(validAdjacentSquares) {
   for (const square of validAdjacentSquares) {
     if (square.children.player1 || square.children.player2) {
-      game.gameBoardContainer.removeChild(game.gameBoard());
+      game.gameBoard().remove();
       game.playerOneScreenKeysContainer.addClass('hide');
       game.playerTwoScreenKeysContainer.addClass('hide');
       return startBattle();
@@ -800,9 +800,11 @@ function dropOldWeapon(weapons, oldWeaponId, presentPlayerSquare) {
 
 // Battle
 function startBattle() {
-  game.gameBoardBattle.style.backgroundImage =
-    'url("assets/bg-img/battle-bg-light.png")';
-  game.gameBoardBattle.classList.remove('hide');
+  game.gameBoardBattle.css(
+    'background-image',
+    'url("assets/bg-img/battle-bg-light.png")'
+  );
+  game.gameBoardBattle.removeClass('hide');
   playerBox.playerOneWeapon.classList.add('player-one-battle-mode');
   playerBox.playerTwoWeapon.classList.add('player-two-battle-mode');
   playerBox.playerOneShield.classList.add('player-one-battle-mode');
@@ -974,25 +976,24 @@ export function startSlideShow() {
     switchImages(indexFromImageIndexRange);
   }, 7000);
 
-  document.addEventListener('click', event => {
-    if (event.target === game.startGameBtn) {
-      clearInterval(imageInterval);
-    }
-  });
-  game.gallery.addEventListener('mouseover', event => {
+  // Stop gallery slide show when game starts
+  game.startGameBtn.on('click', event => {
     clearInterval(imageInterval);
-    game.galleryImgCaption.classList.add('invisible');
   });
-  game.gallery.addEventListener('mouseout', event => {
+  game.gallery.on('mouseover', event => {
+    clearInterval(imageInterval);
+    game.galleryImgCaption.addClass('invisible');
+  });
+  game.gallery.on('mouseout', event => {
     imageInterval = setInterval(() => {
       switchImages(indexFromImageIndexRange);
     }, 7000);
-    game.galleryImgCaption.classList.remove('invisible');
+    game.galleryImgCaption.removeClass('invisible');
   });
 }
 
 function switchImages(imageIndex) {
-  game.gallery.classList.add('invisible');
+  game.gallery.addClass('invisible');
   setTimeout(() => {
     setGalleryImageAndCaption(
       game.galleryImg,
@@ -1001,17 +1002,17 @@ function switchImages(imageIndex) {
     );
   }, 1000);
   setTimeout(() => {
-    game.gallery.classList.add('visible');
+    game.gallery.addClass('visible');
   }, 1000);
   setTimeout(() => {
-    game.gallery.classList.remove('invisible');
-    game.gallery.classList.remove('visible');
+    game.gallery.removeClass('invisible');
+    game.gallery.removeClass('visible');
   }, 1500);
 }
 
 function setGalleryImageAndCaption(imageSelector, textSelector, index) {
-  imageSelector.src = item.galleryImgs[index].image;
-  textSelector.textContent = item.galleryImgs[index].caption;
+  imageSelector.attr('src', item.galleryImgs[index].image);
+  textSelector.text(item.galleryImgs[index].caption);
 }
 
 function updatePlayerWeapon(player, weaponCache = item.defaultWeapon, id = 13) {

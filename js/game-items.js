@@ -322,9 +322,13 @@ export const defaultWeapon = weaponItems
   .map(weapon => weapon);
 
 export function setAvatarInputOptions(images) {
-  images.forEach((img, index) => {
-    img.src = imgSrc[index];
-    img.previousElementSibling.id = inputId[index];
-    img.parentElement.setAttribute('for', inputId[index]);
+  images.each((index, img) => {
+    $(img).attr('src', imgSrc[index]);
+    $(img)
+      .prev()
+      .attr('id', inputId[index]);
+    $(img)
+      .parent()
+      .attr('for', inputId[index]);
   });
 }
