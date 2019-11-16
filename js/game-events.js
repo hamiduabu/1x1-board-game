@@ -125,31 +125,43 @@ export function startGame() {
     // Display player Stats
 
     // Player Avatar and name
-    playerBox.playerOneImg.src = playerOne.mainImgUrl;
-    playerBox.playerTwoImg.src = playerTwo.mainImgUrl;
+    playerBox.playerOneImg.attr('src', playerOne.mainImgUrl);
+    playerBox.playerTwoImg.attr('src', playerTwo.mainImgUrl);
 
-    playerBox.playerOneName.textContent = `${playerOne.name}`;
-    playerBox.playerTwoName.textContent = `${playerTwo.name}`;
+    playerBox.playerOneName.text(`${playerOne.name}`);
+    playerBox.playerTwoName.text(`${playerTwo.name}`);
 
     // Health Points
-    playerBox.playerOneHpValue.textContent = '100';
-    playerBox.playerTwoHpValue.textContent = '100';
+    playerBox.playerOneHpValue.text('100');
+    playerBox.playerTwoHpValue.text('100');
 
-    [
-      playerBox.playerOneWeaponImg.id,
-      playerBox.playerOneWeaponImg.src,
-      playerBox.playerOneWeaponName.textContent,
-      playerBox.playerOneWeaponDesc.textContent,
-      playerBox.playerOneWeaponAp.textContent
-    ] = Object.values(updatePlayerWeapon(playerOne));
+    // [
+    //   playerBox.playerOneWeaponImg.id,
+    //   playerBox.playerOneWeaponImg.src,
+    //   playerBox.playerOneWeaponName.textContent,
+    //   playerBox.playerOneWeaponDesc.textContent,
+    //   playerBox.playerOneWeaponAp.textContent
+    // ] = Object.values(updatePlayerWeapon(playerOne));
 
-    [
-      playerBox.playerTwoWeaponImg.id,
-      playerBox.playerTwoWeaponImg.src,
-      playerBox.playerTwoWeaponName.textContent,
-      playerBox.playerTwoWeaponDesc.textContent,
-      playerBox.playerTwoWeaponAp.textContent
-    ] = Object.values(updatePlayerWeapon(playerTwo));
+    playerBox.playerOneWeaponImg.attr({
+      id: updatePlayerWeapon(playerOne).domId,
+      src: updatePlayerWeapon(playerOne).image
+    });
+    playerBox.playerOneWeaponName.text(updatePlayerWeapon(playerOne).name);
+    playerBox.playerOneWeaponDesc.text(
+      updatePlayerWeapon(playerOne).description
+    );
+    playerBox.playerOneWeaponAp.text(updatePlayerWeapon(playerOne).damage);
+
+    playerBox.playerTwoWeaponImg.attr({
+      id: updatePlayerWeapon(playerTwo).domId,
+      src: updatePlayerWeapon(playerTwo).image
+    });
+    playerBox.playerTwoWeaponName.text(updatePlayerWeapon(playerTwo).name);
+    playerBox.playerTwoWeaponDesc.text(
+      updatePlayerWeapon(playerTwo).description
+    );
+    playerBox.playerTwoWeaponAp.text(updatePlayerWeapon(playerTwo).damage);
 
     // append to dom
     game.gameBoardContainer.append(boardFragment);
@@ -624,15 +636,21 @@ function pickNewWeapon(
   // const currentPlayer = playerObject;
   const oldWeaponId = playerObject.weaponId;
   playerObject.weaponId = newWeaponId;
-  [
-    playerBox[`${playerString}WeaponImg`].id,
-    playerBox[`${playerString}WeaponImg`].src,
-    playerBox[`${playerString}WeaponName`].textContent,
-    playerBox[`${playerString}WeaponDesc`].textContent,
-    playerBox[`${playerString}WeaponAp`].textContent
-  ] = Object.values(
-    updatePlayerWeapon(playerObject, weaponsCache, newWeaponId)
-  );
+
+  playerBox[`${playerString}WeaponImg`].attr({
+    id: updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).domId,
+    src: updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).image
+  });
+  playerBox[`${playerString}WeaponName`].text(
+    updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).name
+  ),
+    playerBox[`${playerString}WeaponDesc`].text(
+      updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).description
+    ),
+    playerBox[`${playerString}WeaponAp`].text(
+      updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).damage
+    );
+
   dropOldWeapon(weaponsCache, oldWeaponId, presentPlayerSquare);
 }
 
@@ -805,14 +823,20 @@ function startBattle() {
     'url("assets/bg-img/battle-bg-light.png")'
   );
   game.gameBoardBattle.removeClass('hide');
-  playerBox.playerOneWeapon.classList.add('player-one-battle-mode');
-  playerBox.playerTwoWeapon.classList.add('player-two-battle-mode');
-  playerBox.playerOneShield.classList.add('player-one-battle-mode');
-  playerBox.playerOneShield.classList.remove('hide');
-  playerBox.playerTwoShield.classList.add('player-two-battle-mode');
-  playerBox.playerTwoShield.classList.remove('hide');
-  playerBox.playerOneWeaponProjectile.src = playerBox.playerOneWeaponImg.src;
-  playerBox.playerTwoWeaponProjectile.src = playerBox.playerTwoWeaponImg.src;
+  playerBox.playerOneWeapon.addClass('player-one-battle-mode');
+  playerBox.playerTwoWeapon.addClass('player-two-battle-mode');
+  playerBox.playerOneShield.addClass('player-one-battle-mode');
+  playerBox.playerOneShield.removeClass('hide');
+  playerBox.playerTwoShield.addClass('player-two-battle-mode');
+  playerBox.playerTwoShield.removeClass('hide');
+  playerBox.playerOneWeaponProjectile.attr(
+    'src',
+    playerBox.playerOneWeaponImg.attr('src')
+  );
+  playerBox.playerTwoWeaponProjectile.attr(
+    'src',
+    playerBox.playerTwoWeaponImg.attr('src')
+  );
   createAttack();
 }
 
@@ -832,7 +856,7 @@ function createAttack(turn = 1) {
   // Manage Shields
   [playerBox.playerOneShield, playerBox.playerTwoShield].forEach(
     playerShield => {
-      playerShield.addEventListener('click', event => {
+      playerShield.on('click', event => {
         if (event.target.closest('#player-one-shield') && turn === 1) {
           if (isPlayerOneShieldUp === false) {
             isPlayerOneShieldUp = true;
@@ -853,7 +877,7 @@ function createAttack(turn = 1) {
 
           playerOne.avatar.classList.add('active-shooter');
           playerTwo.avatar.classList.remove('active-shooter');
-          playerBox.playerTwoImg.classList.add('left-shield-up');
+          playerBox.playerTwoImg.addClass('left-shield-up');
           turn = 1;
           checkWinCondition(turn, playerOne, playerTwo, 0);
         }
@@ -864,12 +888,12 @@ function createAttack(turn = 1) {
   // Manage Attacks
   [playerBox.playerOneWeapon, playerBox.playerTwoWeapon].forEach(
     playerWeapon => {
-      playerWeapon.addEventListener('click', event => {
+      playerWeapon.on('click', event => {
         if (event.target.closest('#player-one-weapon') && turn === 1) {
           playerTwo.avatar.classList.add('active-shooter');
           playerOne.avatar.classList.remove('active-shooter');
           setTimeout(() => {
-            playerBox.playerTwoImg.classList.remove('left-shield-up');
+            playerBox.playerTwoImg.removeClass('left-shield-up');
           }, 1500);
 
           launchAttack(playerOne, 'attack-right');
@@ -880,7 +904,7 @@ function createAttack(turn = 1) {
           playerOne.avatar.classList.add('active-shooter');
           playerTwo.avatar.classList.remove('active-shooter');
           setTimeout(() => {
-            playerBox.playerOneImg.classList.remove('right-shield-up');
+            playerBox.playerOneImg.removeClass('right-shield-up');
           }, 1500);
 
           launchAttack(playerTwo, 'attack-left');
@@ -947,17 +971,21 @@ function gameReload() {
 
 function getUpdatedPlayerDetails(playerString) {
   const player = {
-    name: playerBox[`${playerString}Name`].textContent,
-    avatar: playerBox[`${playerString}Img`],
-    avatarImg: playerBox[`${playerString}Img`].src,
-    weaponId: utils.extractNumbers(playerBox[`${playerString}WeaponImg`].id),
-    weaponName: playerBox[`${playerString}WeaponName`].textContent,
-    weaponImg: playerBox[`${playerString}WeaponImg`].src,
-    maxAttackPoints: Number(playerBox[`${playerString}WeaponAp`].textContent),
-    WeaponProjectile: playerBox[`${playerString}WeaponProjectile`],
-    WeaponProjectileImg: playerBox[`${playerString}WeaponProjectile`].src,
-    health: Number(playerBox[`${playerString}HpValue`].textContent),
-    healthMeter: playerBox[`${playerString}HpValue`]
+    name: playerBox[`${playerString}Name`].text(),
+    avatar: playerBox[`${playerString}Img`].get(0),
+    avatarImg: playerBox[`${playerString}Img`].attr('src'),
+    weaponId: utils.extractNumbers(
+      playerBox[`${playerString}WeaponImg`].attr('id')
+    ),
+    weaponName: playerBox[`${playerString}WeaponName`].text(),
+    weaponImg: playerBox[`${playerString}WeaponImg`].attr('src'),
+    maxAttackPoints: Number(playerBox[`${playerString}WeaponAp`].text()),
+    WeaponProjectile: playerBox[`${playerString}WeaponProjectile`].get(0),
+    WeaponProjectileImg: playerBox[`${playerString}WeaponProjectile`].attr(
+      'src'
+    ),
+    health: Number(playerBox[`${playerString}HpValue`].text()),
+    healthMeter: playerBox[`${playerString}HpValue`].get(0)
   };
   return player;
 }
@@ -1033,44 +1061,30 @@ function updatePlayerWeapon(player, weaponCache = item.defaultWeapon, id = 13) {
 function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
   setTimeout(() => {
     if (turn === 1 && toPlayer.health <= 0 && fromPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner-modal');
-      document.querySelector(
-        '#winner-details h1'
-      ).textContent = `${toPlayer.name} - DRAWS WITH - ${fromPlayer.name}`;
-      document.querySelector('#winner-details img#winner-one').src =
-        toPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-one')
-        .classList.remove('hide');
-      document.querySelector('#winner-details img#winner-two').src =
-        fromPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-two')
-        .classList.remove('hide');
+      $('#winner-details').addClass('winner-modal');
+      $('#winner-details h1').text(
+        `${toPlayer.name} - DRAWS WITH - ${fromPlayer.name}`
+      );
+      $('#winner-details img#winner-one').attr('src', toPlayer.avatarImg);
+
+      $('#winner-details img#winner-one').removeClass('hide');
+      $('#winner-details img#winner-two').attr('src', fromPlayer.avatarImg);
+      $('#winner-details img#winner-two').removeClass('hide');
     } else if (turn === 1 && toPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner-modal');
-      document.querySelector('#winner-details h1').textContent =
-        fromPlayer.name + ' Wins';
-      document.querySelector('#winner-details img#winner-two').src =
-        fromPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-two')
-        .classList.remove('hide');
+      $('#winner-details').addClass('winner-modal');
+      $('#winner-details h1').text(`${fromPlayer.name} Wins`);
+      $('#winner-details img#winner-two').attr('src', fromPlayer.avatarImg);
+      $('#winner-details img#winner-two').removeClass('hide');
     } else if (turn === 1 && fromPlayer.health <= 0) {
-      document.querySelector('#winner-details').classList.add('winner-modal');
-      document.querySelector('#winner-details h1').textContent =
-        toPlayer.name + ' Wins';
-      document.querySelector('#winner-details img#winner-one').src =
-        toPlayer.avatarImg;
-      document
-        .querySelector('#winner-details img#winner-one')
-        .classList.remove('hide');
+      $('#winner-details').addClass('winner-modal');
+      $('#winner-details h1').text(`${toPlayer.name} Wins`);
+      $('#winner-details img#winner-one').attr('src', toPlayer.avatarImg);
+      $('#winner-details img#winner-one').removeClass('hide');
     }
   }, delay);
 }
 
 function getMovement(player) {
-
   return {
     getTopRow: function() {
       return player.parentElement.parentElement.previousElementSibling;

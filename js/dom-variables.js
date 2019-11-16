@@ -69,42 +69,34 @@ export const game = {
   closeModal: function(modal) {
     modal.removeClass('modal-display');
   },
-  playerBoxOne: document.querySelector('.player-box-1'),
-  playerBoxTwo: document.querySelector('.player-box-2')
+  playerBoxOne: $('.player-box-1'),
+  playerBoxTwo: $('.player-box-2')
 };
 
 // Variables about players information
 export const playerBox = {
-  playerOneImg: game.playerBoxOne.querySelector('#avatar1'),
-  playerTwoImg: game.playerBoxTwo.querySelector('#avatar2'),
+  playerOneImg: game.playerBoxOne.find('#avatar1'),
+  playerTwoImg: game.playerBoxTwo.find('#avatar2'),
 
-  playerOneName: game.playerBoxOne.querySelector('figcaption.name'),
-  playerTwoName: game.playerBoxTwo.querySelector('figcaption.name'),
+  playerOneName: game.playerBoxOne.find('figcaption.name'),
+  playerTwoName: game.playerBoxTwo.find('figcaption.name'),
 
-  playerOneHpValue: game.playerBoxOne.querySelector('.hp-meter-value'),
-  playerTwoHpValue: game.playerBoxTwo.querySelector('.hp-meter-value'),
+  playerOneHpValue: game.playerBoxOne.find('.hp-meter-value'),
+  playerTwoHpValue: game.playerBoxTwo.find('.hp-meter-value'),
 
-  playerOneWeapon: game.playerBoxOne.querySelector('#player-one-weapon'),
-  playerOneShield: game.playerBoxOne.querySelector('#player-one-shield'),
-  playerOneWeaponImg: game.playerBoxOne.querySelector('img.weapon'),
-  playerOneWeaponName: game.playerBoxOne.querySelector(
-    'figcaption.weapon-name'
-  ),
-  playerOneWeaponDesc: game.playerBoxOne.querySelector('p.weapon-description'),
-  playerOneWeaponAp: game.playerBoxOne.querySelector('span.attack-points'),
-  playerOneWeaponProjectile: game.playerBoxOne.querySelector(
-    '#player-one-projectile'
-  ),
+  playerOneWeapon: game.playerBoxOne.find('#player-one-weapon'),
+  playerOneShield: game.playerBoxOne.find('#player-one-shield'),
+  playerOneWeaponImg: game.playerBoxOne.find('img.weapon'),
+  playerOneWeaponName: game.playerBoxOne.find('figcaption.weapon-name'),
+  playerOneWeaponDesc: game.playerBoxOne.find('p.weapon-description'),
+  playerOneWeaponAp: game.playerBoxOne.find('span.attack-points'),
+  playerOneWeaponProjectile: game.playerBoxOne.find('#player-one-projectile'),
 
-  playerTwoWeapon: game.playerBoxTwo.querySelector('#player-two-weapon'),
-  playerTwoShield: game.playerBoxTwo.querySelector('#player-two-shield'),
-  playerTwoWeaponImg: game.playerBoxTwo.querySelector('img.weapon'),
-  playerTwoWeaponName: game.playerBoxTwo.querySelector(
-    'figcaption.weapon-name'
-  ),
-  playerTwoWeaponDesc: game.playerBoxTwo.querySelector('p.weapon-description'),
-  playerTwoWeaponAp: game.playerBoxTwo.querySelector('span.attack-points'),
-  playerTwoWeaponProjectile: game.playerBoxTwo.querySelector(
-    '#player-two-projectile'
-  )
+  playerTwoWeapon: game.playerBoxTwo.find('#player-two-weapon'),
+  playerTwoShield: game.playerBoxTwo.find('#player-two-shield'),
+  playerTwoWeaponImg: game.playerBoxTwo.find('img.weapon'),
+  playerTwoWeaponName: game.playerBoxTwo.find('figcaption.weapon-name'),
+  playerTwoWeaponDesc: game.playerBoxTwo.find('p.weapon-description'),
+  playerTwoWeaponAp: game.playerBoxTwo.find('span.attack-points'),
+  playerTwoWeaponProjectile: game.playerBoxTwo.find('#player-two-projectile')
 };
