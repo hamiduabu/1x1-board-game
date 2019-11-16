@@ -41,17 +41,6 @@ export function getPlayerName(playerDomNode) {
     : playerDomNode.val();
 }
 
-// export function getPlayerAvatarDetails(playerSelection, arr) {
-//   const playerOptions = {};
-//   for (const obj of arr) {
-//     if (extractNumbers(playerSelection.id) === obj.id) {
-//       playerOptions.avatarId = obj.id;
-//       playerOptions.mainImgUrl = obj.imgUrl;
-//       playerOptions.miniImgUrl = obj.miniImgUrl;
-//     }
-//   }
-//   return playerOptions;
-// }
 export function getPlayerAvatarDetails(playerSelection, arr) {
   const playerOptions = {};
   for (const obj of arr) {

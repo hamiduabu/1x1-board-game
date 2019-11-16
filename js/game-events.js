@@ -1070,8 +1070,7 @@ function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
 }
 
 function getMovement(player) {
-  // const leftSquare = player.parentElement.previousElementSibling;
-  // const rightSquare = player.parentElement.nextElementSibling;
+
   return {
     getTopRow: function() {
       return player.parentElement.parentElement.previousElementSibling;
