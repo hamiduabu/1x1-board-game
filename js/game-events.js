@@ -645,7 +645,7 @@ function manageAfterMovementConditions(
 function manageActivePlayerState(numberOfTurns, playerTurn, player2, player1) {
   if (numberOfTurns === 3) {
     playerTurn.classList.remove('active-player-one');
-    // playerTurn = player2;
+    playerTurn = player2;
     playerTurn.classList.add('active-player-two');
   }
   if (numberOfTurns >= 3 && numberOfTurns <= 6) {
@@ -1066,7 +1066,7 @@ function updateHealthMeter(fromPlayer, toPlayer, damage, turn) {
     toPlayer.healthMeter.textContent = toPlayer.health;
   }, 1500);
 
-  checkWinCondition(turn, toPlayer, fromPlayer, 1500);
+  checkWinCondition(turn, toPlayer, fromPlayer, 0);
 
   gameReload();
 }
