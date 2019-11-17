@@ -5,6 +5,7 @@ import * as item from './game-items.js';
 import { Player } from './game-prototypes.js';
 import { Board } from './game-prototypes.js';
 
+// Manage Modal to allow player enter code name and select avatar
 export function managePlayerOptions() {
   game.playerOptionsBtn.on('click', function() {
     game.playerOptionsModal.addClass('modal-display');
@@ -14,9 +15,7 @@ export function managePlayerOptions() {
   });
 }
 
-// export function cancelPlayerOptions() {}
-
-// Modal events
+// Start Game play
 export function startGame() {
   game.startGameBtn.on('click', () => {
     console.log('Starting ...');
@@ -122,8 +121,7 @@ export function startGame() {
     // Display Heading
     game.combatants.text(`${playerOne.name} VS ${playerTwo.name}`);
 
-    // Display player Stats
-
+    /*     Display player Stats */
     // Player Avatar and name
     playerBox.playerOneImg.attr('src', playerOne.mainImgUrl);
     playerBox.playerTwoImg.attr('src', playerTwo.mainImgUrl);
@@ -135,56 +133,107 @@ export function startGame() {
     playerBox.playerOneHpValue.text('100');
     playerBox.playerTwoHpValue.text('100');
 
-    // [
-    //   playerBox.playerOneWeaponImg.id,
-    //   playerBox.playerOneWeaponImg.src,
-    //   playerBox.playerOneWeaponName.textContent,
-    //   playerBox.playerOneWeaponDesc.textContent,
-    //   playerBox.playerOneWeaponAp.textContent
-    // ] = Object.values(updatePlayerWeapon(playerOne));
-
+    // Player weapon details
     playerBox.playerOneWeaponImg.attr({
-      id: updatePlayerWeapon(playerOne).domId,
-      src: updatePlayerWeapon(playerOne).image
+      id: setPlayerWeapon(playerOne).domId,
+      src: setPlayerWeapon(playerOne).image
     });
-    playerBox.playerOneWeaponName.text(updatePlayerWeapon(playerOne).name);
-    playerBox.playerOneWeaponDesc.text(
-      updatePlayerWeapon(playerOne).description
-    );
-    playerBox.playerOneWeaponAp.text(updatePlayerWeapon(playerOne).damage);
+    playerBox.playerOneWeaponName.text(setPlayerWeapon(playerOne).name);
+    playerBox.playerOneWeaponDesc.text(setPlayerWeapon(playerOne).description);
+    playerBox.playerOneWeaponAp.text(setPlayerWeapon(playerOne).damage);
 
     playerBox.playerTwoWeaponImg.attr({
-      id: updatePlayerWeapon(playerTwo).domId,
-      src: updatePlayerWeapon(playerTwo).image
+      id: setPlayerWeapon(playerTwo).domId,
+      src: setPlayerWeapon(playerTwo).image
     });
-    playerBox.playerTwoWeaponName.text(updatePlayerWeapon(playerTwo).name);
-    playerBox.playerTwoWeaponDesc.text(
-      updatePlayerWeapon(playerTwo).description
-    );
-    playerBox.playerTwoWeaponAp.text(updatePlayerWeapon(playerTwo).damage);
+    playerBox.playerTwoWeaponName.text(setPlayerWeapon(playerTwo).name);
+    playerBox.playerTwoWeaponDesc.text(setPlayerWeapon(playerTwo).description);
+    playerBox.playerTwoWeaponAp.text(setPlayerWeapon(playerTwo).damage);
 
     // append to dom
     game.gameBoardContainer.append(boardFragment);
   });
 }
 
-// Create initial active/authorized movement squares
-/**
- * @param {DocumentFragment} domObject
- */
-function setInitialActiveSquares(domObject) {
-  const player1 = domObject.querySelector('#player1');
-  const player2 = domObject.querySelector('#player2');
-  const playerTurn = player1;
+export function startSlideShow() {
+  const indexFromImageIndexRange = utils.intervalCounter(
+    item.galleryImgs.length
+  );
+  setGalleryImageAndCaption(
+    game.galleryImg,
+    game.galleryImgCaption,
+    indexFromImageIndexRange()
+  );
 
-  playerTurn.classList.add('active-player-one');
-  const availableSquares = [
-    ...saveAvailableSquaresRight(playerTurn),
-    ...saveAvailableSquaresLeft(playerTurn),
-    ...saveAvailableSquaresDown(playerTurn),
-    ...saveAvailableSquaresTop(playerTurn)
-  ];
-  return { availableSquares, playerTurn, player1, player2 };
+  let imageInterval = setInterval(() => {
+    switchImages(indexFromImageIndexRange);
+  }, 7000);
+
+  // Stop gallery slide show when game starts
+  game.startGameBtn.on('click', event => {
+    clearInterval(imageInterval);
+  });
+  game.gallery.on('mouseover', event => {
+    clearInterval(imageInterval);
+    game.galleryImgCaption.addClass('invisible');
+  });
+  game.gallery.on('mouseout', event => {
+    imageInterval = setInterval(() => {
+      switchImages(indexFromImageIndexRange);
+    }, 7000);
+    game.galleryImgCaption.removeClass('invisible');
+  });
+}
+
+// Change images on slide show
+function switchImages(imageIndex) {
+  game.gallery.addClass('invisible');
+  setTimeout(() => {
+    setGalleryImageAndCaption(
+      game.galleryImg,
+      game.galleryImgCaption,
+      imageIndex()
+    );
+  }, 1000);
+  setTimeout(() => {
+    game.gallery.addClass('visible');
+  }, 1000);
+  setTimeout(() => {
+    game.gallery.removeClass('invisible');
+    game.gallery.removeClass('visible');
+  }, 1500);
+}
+
+function setGalleryImageAndCaption(imageSelector, textSelector, index) {
+  imageSelector.attr('src', item.galleryImgs[index].image);
+  textSelector.text(item.galleryImgs[index].caption);
+}
+
+// Get players details from Modal Dialog Form
+function getInitialPlayerDetails() {
+  const playerOneName = utils.getPlayerName(game.playerOneNameInput);
+  const playerOneAvatarDetails = utils.getPlayerAvatarDetails(
+    game.playerOneAvatarSelect(),
+    item.avatars
+  );
+  const playerTwoName = utils.getPlayerName(game.playerTwoNameInput);
+  const playerTwoAvatarDetails = utils.getPlayerAvatarDetails(
+    game.playerTwoAvatarSelect(),
+    item.avatars
+  );
+  const playerOne = new Player(
+    playerOneName,
+    playerOneAvatarDetails.avatarId,
+    playerOneAvatarDetails.mainImgUrl,
+    playerOneAvatarDetails.miniImgUrl
+  );
+  const playerTwo = new Player(
+    playerTwoName,
+    playerTwoAvatarDetails.avatarId,
+    playerTwoAvatarDetails.mainImgUrl,
+    playerTwoAvatarDetails.miniImgUrl
+  );
+  return [playerOne, playerTwo];
 }
 
 // Setup inactive squares
@@ -217,31 +266,115 @@ function setupBoardItem(
   }
 }
 
-// Get players details from Modal Dialog Form
-function getInitialPlayerDetails() {
-  const playerOneName = utils.getPlayerName(game.playerOneNameInput);
-  const playerOneAvatarDetails = utils.getPlayerAvatarDetails(
-    game.playerOneAvatarSelect(),
-    item.avatars
-  );
-  const playerTwoName = utils.getPlayerName(game.playerTwoNameInput);
-  const playerTwoAvatarDetails = utils.getPlayerAvatarDetails(
-    game.playerTwoAvatarSelect(),
-    item.avatars
-  );
-  const playerOne = new Player(
-    playerOneName,
-    playerOneAvatarDetails.avatarId,
-    playerOneAvatarDetails.mainImgUrl,
-    playerOneAvatarDetails.miniImgUrl
-  );
-  const playerTwo = new Player(
-    playerTwoName,
-    playerTwoAvatarDetails.avatarId,
-    playerTwoAvatarDetails.mainImgUrl,
-    playerTwoAvatarDetails.miniImgUrl
-  );
-  return [playerOne, playerTwo];
+// Create initial active/authorized movement squares
+/**
+ * @param {DocumentFragment} domObject
+ */
+function setInitialActiveSquares(domObject) {
+  const player1 = domObject.querySelector('#player1');
+  const player2 = domObject.querySelector('#player2');
+  const playerTurn = player1;
+
+  playerTurn.classList.add('active-player-one');
+  const availableSquares = [
+    ...saveAvailableSquaresRight(playerTurn),
+    ...saveAvailableSquaresLeft(playerTurn),
+    ...saveAvailableSquaresDown(playerTurn),
+    ...saveAvailableSquaresTop(playerTurn)
+  ];
+  return { availableSquares, playerTurn, player1, player2 };
+}
+
+// Get possible movements
+function getMovement(player) {
+  return {
+    getTopRow: function() {
+      return player.parentElement.parentElement.previousElementSibling;
+    },
+    getTopSquare: function() {
+      return this.getTopRow().children[
+        utils.getElementPresentPositionIndex(player)
+      ];
+    },
+    getBottomRow: function() {
+      return player.parentElement.parentElement.nextElementSibling;
+    },
+    getBottomSquare: function() {
+      return this.getBottomRow().children[
+        utils.getElementPresentPositionIndex(player)
+      ];
+    },
+    getLeftSquare: function() {
+      return player.parentElement.previousElementSibling;
+    },
+    getRightSquare: function() {
+      return player.parentElement.nextElementSibling;
+    }
+  };
+}
+
+// Control movements
+function move() {
+  return {
+    illegalMoveRight: function(player) {
+      return (
+        !getMovement(player).getRightSquare() ||
+        getMovement(player)
+          .getRightSquare()
+          .classList.contains('inactive')
+      );
+    },
+
+    illegalMoveLeft: function(player) {
+      return (
+        !getMovement(player).getLeftSquare() ||
+        getMovement(player)
+          .getLeftSquare()
+          .classList.contains('inactive')
+      );
+    },
+
+    illegalMoveDown: function(player) {
+      return (
+        !getMovement(player).getBottomRow() ||
+        getMovement(player)
+          .getBottomSquare()
+          .classList.contains('inactive')
+      );
+    },
+
+    illegalMoveUp: function(player) {
+      return (
+        !getMovement(player).getTopRow() ||
+        getMovement(player)
+          .getTopSquare()
+          .classList.contains('inactive')
+      );
+    },
+    moveRight: function(player) {
+      getMovement(player)
+        .getRightSquare()
+        .appendChild(player);
+    },
+
+    moveLeft: function(player) {
+      getMovement(player)
+        .getLeftSquare()
+        .appendChild(player);
+    },
+
+    moveDown: function(player) {
+      getMovement(player)
+        .getBottomSquare()
+        .appendChild(player);
+    },
+
+    moveUp: function(player) {
+      getMovement(player)
+        .getTopSquare()
+        .appendChild(player);
+    }
+  };
 }
 
 // Movements
@@ -336,18 +469,16 @@ function manageMovements(
 
   game.onScreenKeys.click(function moveWithOnScreenArrowKeys(event) {
     if (game.gameBoardContainer.children.length === 0) {
-      allowedOnScreenButtonKeyIds = [];
+      return (allowedOnScreenButtonKeyIds = []);
     }
-    if (!allowedOnScreenButtonKeyIds.includes(event.target.id)) {
-      return;
-    }
+
     for (const square of availableSquares) {
       square.classList.remove(
         'available-move-player-one',
         'available-move-player-two'
       );
     }
-    // availableSquares = [];
+
     // Player One Movements using on screen keys
     if (playerTurn === player1) {
       // Move up
@@ -460,22 +591,22 @@ function manageMovements(
     );
   });
 
-  document.addEventListener('keyup', function keyUpEvent(event) {
-    if (game.gameBoardContainer.children.length === 0) {
-      allowedKeys = [];
-    }
-    if (!allowedKeys.includes(event.key)) {
-      return event.preventDefault();
-    }
+  document.addEventListener(
+    'keyup',
+    function checkAfterMoveWithKeyboardConditions(event) {
+      if (game.gameBoardContainer.children.length === 0) {
+        return (allowedKeys = []);
+      }
 
-    // Manage turns save and highlight new available squares
-    // and check if battle condition is fulfilled
-    availableSquares = manageAfterMovementConditions(
-      availableSquares,
-      playerTurn,
-      numberOfTurns
-    );
-  });
+      // Manage turns save and highlight new available squares
+      // and check if battle condition is fulfilled
+      availableSquares = manageAfterMovementConditions(
+        availableSquares,
+        playerTurn,
+        numberOfTurns
+      );
+    }
+  );
 }
 
 function manageAfterMovementConditions(
@@ -510,10 +641,11 @@ function manageAfterMovementConditions(
   return availableSquares;
 }
 
+// Next player is active after previous player has had 3 turns(3 moves)
 function manageActivePlayerState(numberOfTurns, playerTurn, player2, player1) {
   if (numberOfTurns === 3) {
     playerTurn.classList.remove('active-player-one');
-    playerTurn = player2;
+    // playerTurn = player2;
     playerTurn.classList.add('active-player-two');
   }
   if (numberOfTurns >= 3 && numberOfTurns <= 6) {
@@ -528,69 +660,60 @@ function manageActivePlayerState(numberOfTurns, playerTurn, player2, player1) {
   return { numberOfTurns, playerTurn };
 }
 
-function move() {
-  return {
-    illegalMoveRight: function(player) {
-      return (
-        !getMovement(player).getRightSquare() ||
-        getMovement(player)
-          .getRightSquare()
-          .classList.contains('inactive')
-      );
-    },
-
-    illegalMoveLeft: function(player) {
-      return (
-        !getMovement(player).getLeftSquare() ||
-        getMovement(player)
-          .getLeftSquare()
-          .classList.contains('inactive')
-      );
-    },
-
-    illegalMoveDown: function(player) {
-      return (
-        !getMovement(player).getBottomRow() ||
-        getMovement(player)
-          .getBottomSquare()
-          .classList.contains('inactive')
-      );
-    },
-
-    illegalMoveUp: function(player) {
-      return (
-        !getMovement(player).getTopRow() ||
-        getMovement(player)
-          .getTopSquare()
-          .classList.contains('inactive')
-      );
-    },
-    moveRight: function(player) {
-      getMovement(player)
-        .getRightSquare()
-        .appendChild(player);
-    },
-
-    moveLeft: function(player) {
-      getMovement(player)
-        .getLeftSquare()
-        .appendChild(player);
-    },
-
-    moveDown: function(player) {
-      getMovement(player)
-        .getBottomSquare()
-        .appendChild(player);
-    },
-
-    moveUp: function(player) {
-      getMovement(player)
-        .getTopSquare()
-        .appendChild(player);
+// Set a players weapon
+function setPlayerWeapon(player, weaponCache = item.defaultWeapon, id = 13) {
+  const weaponProperty = {};
+  for (const weapon of weaponCache) {
+    if (weapon.id === id) {
+      weaponProperty.domId = `weapon${id}`;
+      weaponProperty.image = weapon.weaponUrl;
+      weaponProperty.name = weapon.name;
+      weaponProperty.description = weapon.description;
+      weaponProperty.damage = weapon.damage;
+      player.weaponId = id;
     }
-  };
+  }
+  return weaponProperty;
 }
 
+// Drop old weapon
+function dropOldWeapon(weapons, oldWeaponId, presentPlayerSquare) {
+  for (const weapon of weapons) {
+    if (weapon.id === oldWeaponId) {
+      presentPlayerSquare.firstElementChild.src = weapon.miniImgUrl;
+      presentPlayerSquare.firstElementChild.id = `weapon${oldWeaponId}`;
+    }
+  }
+}
+
+// Pick a new weapon from the board
+function pickNewWeapon(
+  playerObject,
+  playerString,
+  newWeaponId,
+  weaponsCache,
+  presentPlayerSquare
+) {
+  const oldWeaponId = playerObject.weaponId;
+  playerObject.weaponId = newWeaponId;
+
+  playerBox[`${playerString}WeaponImg`].attr({
+    id: setPlayerWeapon(playerObject, weaponsCache, newWeaponId).domId,
+    src: setPlayerWeapon(playerObject, weaponsCache, newWeaponId).image
+  });
+  playerBox[`${playerString}WeaponName`].text(
+    setPlayerWeapon(playerObject, weaponsCache, newWeaponId).name
+  ),
+    playerBox[`${playerString}WeaponDesc`].text(
+      setPlayerWeapon(playerObject, weaponsCache, newWeaponId).description
+    ),
+    playerBox[`${playerString}WeaponAp`].text(
+      setPlayerWeapon(playerObject, weaponsCache, newWeaponId).damage
+    );
+  dropOldWeapon(weaponsCache, oldWeaponId, presentPlayerSquare);
+}
+
+// Replace your weapons on the board
 function switchWeapons(numberOfTurns, player1, player2, players, weapons) {
   let presentPlayer;
   if (numberOfTurns > 0 && numberOfTurns <= 3) {
@@ -626,35 +749,26 @@ function switchWeapons(numberOfTurns, player1, player2, players, weapons) {
   }
 }
 
-function pickNewWeapon(
-  playerObject,
-  playerString,
-  newWeaponId,
-  weaponsCache,
-  presentPlayerSquare
-) {
-  // const currentPlayer = playerObject;
-  const oldWeaponId = playerObject.weaponId;
-  playerObject.weaponId = newWeaponId;
-
-  playerBox[`${playerString}WeaponImg`].attr({
-    id: updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).domId,
-    src: updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).image
-  });
-  playerBox[`${playerString}WeaponName`].text(
-    updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).name
-  ),
-    playerBox[`${playerString}WeaponDesc`].text(
-      updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).description
-    ),
-    playerBox[`${playerString}WeaponAp`].text(
-      updatePlayerWeapon(playerObject, weaponsCache, newWeaponId).damage
-    );
-
-  dropOldWeapon(weaponsCache, oldWeaponId, presentPlayerSquare);
+// Save a players present position to be used to get available squares
+function savePositions(player) {
+  const availableMoves = [];
+  const presentPosition = utils.getElementPresentPositionIndex(player);
+  const parentElement = player.parentElement.parentElement;
+  const playerParent = player.parentElement;
+  const playerPosition = utils.getElementPresentPositionIndex(player);
+  const parentPosition = utils.getElementPresentPositionIndex(playerParent);
+  return {
+    parentPosition,
+    availableMoves,
+    playerParent,
+    playerPosition,
+    presentPosition,
+    parentElement
+  };
 }
 
 // Save Available Squares
+// Available squares are active squares a player can step into
 // Right Squares
 function saveAvailableSquaresRight(player, turns = 0) {
   turns = utils.manageTurns(turns);
@@ -765,25 +879,19 @@ function saveAvailableSquaresTop(player, turns = 0) {
   return availableMovesTop;
 }
 
-// Save positions to be used to get available squares
-function savePositions(player) {
-  const availableMoves = [];
-  const presentPosition = utils.getElementPresentPositionIndex(player);
-  const parentElement = player.parentElement.parentElement;
-  const playerParent = player.parentElement;
-  const playerPosition = utils.getElementPresentPositionIndex(player);
-  const parentPosition = utils.getElementPresentPositionIndex(playerParent);
-  return {
-    parentPosition,
-    availableMoves,
-    playerParent,
-    playerPosition,
-    presentPosition,
-    parentElement
-  };
+// Get active adjacent squares(exclude inactive cells)
+function getValidSquares(adjacentSquares) {
+  const validAdjacentSquares = [];
+  for (const square of adjacentSquares) {
+    if (square) {
+      validAdjacentSquares.push(square);
+    }
+  }
+  return validAdjacentSquares;
 }
 
 // Check if players are adjacent each other
+// If players are adjacent each other, a battle starts
 function checkForBattleCondition(validAdjacentSquares) {
   for (const square of validAdjacentSquares) {
     if (square.children.player1 || square.children.player2) {
@@ -795,25 +903,26 @@ function checkForBattleCondition(validAdjacentSquares) {
   }
 }
 
-// Get valid active squares
-function getValidSquares(adjacentSquares) {
-  const validAdjacentSquares = [];
-  for (const square of adjacentSquares) {
-    if (square) {
-      validAdjacentSquares.push(square);
-    }
-  }
-  return validAdjacentSquares;
-}
-
-// Drop old weapon
-function dropOldWeapon(weapons, oldWeaponId, presentPlayerSquare) {
-  for (const weapon of weapons) {
-    if (weapon.id === oldWeaponId) {
-      presentPlayerSquare.firstElementChild.src = weapon.miniImgUrl;
-      presentPlayerSquare.firstElementChild.id = `weapon${oldWeaponId}`;
-    }
-  }
+// Update players stats (weapon, attack damage before battle)
+function getUpdatedPlayerDetails(playerString) {
+  const player = {
+    name: playerBox[`${playerString}Name`].text(),
+    avatar: playerBox[`${playerString}Img`].get(0),
+    avatarImg: playerBox[`${playerString}Img`].attr('src'),
+    weaponId: utils.extractNumbers(
+      playerBox[`${playerString}WeaponImg`].attr('id')
+    ),
+    weaponName: playerBox[`${playerString}WeaponName`].text(),
+    weaponImg: playerBox[`${playerString}WeaponImg`].attr('src'),
+    maxAttackPoints: Number(playerBox[`${playerString}WeaponAp`].text()),
+    WeaponProjectile: playerBox[`${playerString}WeaponProjectile`].get(0),
+    WeaponProjectileImg: playerBox[`${playerString}WeaponProjectile`].attr(
+      'src'
+    ),
+    health: Number(playerBox[`${playerString}HpValue`].text()),
+    healthMeter: playerBox[`${playerString}HpValue`].get(0)
+  };
+  return player;
 }
 
 // Battle
@@ -962,102 +1071,7 @@ function updateHealthMeter(fromPlayer, toPlayer, damage, turn) {
   gameReload();
 }
 
-function gameReload() {
-  const homeBtn = document.querySelector('#game-over');
-  homeBtn.addEventListener('click', function(event) {
-    location.reload();
-  });
-}
-
-function getUpdatedPlayerDetails(playerString) {
-  const player = {
-    name: playerBox[`${playerString}Name`].text(),
-    avatar: playerBox[`${playerString}Img`].get(0),
-    avatarImg: playerBox[`${playerString}Img`].attr('src'),
-    weaponId: utils.extractNumbers(
-      playerBox[`${playerString}WeaponImg`].attr('id')
-    ),
-    weaponName: playerBox[`${playerString}WeaponName`].text(),
-    weaponImg: playerBox[`${playerString}WeaponImg`].attr('src'),
-    maxAttackPoints: Number(playerBox[`${playerString}WeaponAp`].text()),
-    WeaponProjectile: playerBox[`${playerString}WeaponProjectile`].get(0),
-    WeaponProjectileImg: playerBox[`${playerString}WeaponProjectile`].attr(
-      'src'
-    ),
-    health: Number(playerBox[`${playerString}HpValue`].text()),
-    healthMeter: playerBox[`${playerString}HpValue`].get(0)
-  };
-  return player;
-}
-
-export function startSlideShow() {
-  const indexFromImageIndexRange = utils.intervalCounter(
-    item.galleryImgs.length
-  );
-  setGalleryImageAndCaption(
-    game.galleryImg,
-    game.galleryImgCaption,
-    indexFromImageIndexRange()
-  );
-
-  let imageInterval = setInterval(() => {
-    switchImages(indexFromImageIndexRange);
-  }, 7000);
-
-  // Stop gallery slide show when game starts
-  game.startGameBtn.on('click', event => {
-    clearInterval(imageInterval);
-  });
-  game.gallery.on('mouseover', event => {
-    clearInterval(imageInterval);
-    game.galleryImgCaption.addClass('invisible');
-  });
-  game.gallery.on('mouseout', event => {
-    imageInterval = setInterval(() => {
-      switchImages(indexFromImageIndexRange);
-    }, 7000);
-    game.galleryImgCaption.removeClass('invisible');
-  });
-}
-
-function switchImages(imageIndex) {
-  game.gallery.addClass('invisible');
-  setTimeout(() => {
-    setGalleryImageAndCaption(
-      game.galleryImg,
-      game.galleryImgCaption,
-      imageIndex()
-    );
-  }, 1000);
-  setTimeout(() => {
-    game.gallery.addClass('visible');
-  }, 1000);
-  setTimeout(() => {
-    game.gallery.removeClass('invisible');
-    game.gallery.removeClass('visible');
-  }, 1500);
-}
-
-function setGalleryImageAndCaption(imageSelector, textSelector, index) {
-  imageSelector.attr('src', item.galleryImgs[index].image);
-  textSelector.text(item.galleryImgs[index].caption);
-}
-
-function updatePlayerWeapon(player, weaponCache = item.defaultWeapon, id = 13) {
-  const weaponProperty = {};
-  for (const weapon of weaponCache) {
-    if (weapon.id === id) {
-      weaponProperty.domId = `weapon${id}`;
-      weaponProperty.image = weapon.weaponUrl;
-      weaponProperty.name = weapon.name;
-      weaponProperty.description = weapon.description;
-      weaponProperty.damage = weapon.damage;
-      player.weaponId = id;
-    }
-  }
-  return weaponProperty;
-}
-
+// Check who wins after both players have had a turn
 function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
   setTimeout(() => {
     if (turn === 1 && toPlayer.health <= 0 && fromPlayer.health <= 0) {
@@ -1084,29 +1098,7 @@ function checkWinCondition(turn, toPlayer, fromPlayer, delay) {
   }, delay);
 }
 
-function getMovement(player) {
-  return {
-    getTopRow: function() {
-      return player.parentElement.parentElement.previousElementSibling;
-    },
-    getTopSquare: function() {
-      return this.getTopRow().children[
-        utils.getElementPresentPositionIndex(player)
-      ];
-    },
-    getBottomRow: function() {
-      return player.parentElement.parentElement.nextElementSibling;
-    },
-    getBottomSquare: function() {
-      return this.getBottomRow().children[
-        utils.getElementPresentPositionIndex(player)
-      ];
-    },
-    getLeftSquare: function() {
-      return player.parentElement.previousElementSibling;
-    },
-    getRightSquare: function() {
-      return player.parentElement.nextElementSibling;
-    }
-  };
+// Reload the page to play again
+function gameReload() {
+  game.homeBtn.on('click', () => location.reload());
 }

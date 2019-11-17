@@ -31,6 +31,7 @@ export const game = {
   movementErrorMsg: $('.error-msg'),
 
   shieldAlert: $('.shield-alert'),
+  homeBtn: $('#game-over'),
 
   gameBoard: function() {
     return this.gameBoardContainer.find('.game-board');
