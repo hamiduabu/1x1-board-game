@@ -112,9 +112,21 @@
       <h1 id="combatants" class="game-header"></h1>
     </header>
     <section class="game-area">
+
       <!-- Player One -->
+
+      <!-- Player Two On Screen Keys -->
+      <section class="onscreen-keys-one">
+        <section class="player-keys">
+          <button id="player-one-up-key">&#x1F829;</button>
+          <section><button id="player-one-left-key">&#x1F828;</button> <button
+              id="player-one-right-key">&#x1F82A;</button></section>
+          <button id="player-one-down-key">&#x1F82B;</button>
+        </section>
+      </section>
+      <!-- player One Box -->
       <section class="player-box-1">
-        <figure><img id="avatar1" src="#" alt="Player 1">
+        <figure><img id="avatar1" class="player-box-avatar" src="#" alt="Player 1">
           <img class="projectile" id="player-one-projectile" src="#" alt="">
           <figcaption class="name"></figcaption>
         </figure>
@@ -131,8 +143,8 @@
         </figure>
         <p class="weapon-description"></p>
         <figure id="player-one-shield" class="shield hide">
-          <img src="assets/img/items/shield/shield1.png" alt="" class="weapon">
-          <figcaption class="shield">Shield</figcaption>
+          <img src="assets/img/items/shield/shield1.png" alt="" class="shield">
+          <figcaption class="">Shield</figcaption>
         </figure>
         <h3>Max AP</h3>
         <p><span class="attack-points"></span></p>
@@ -146,7 +158,7 @@
 
       <!-- Player Two -->
       <section class="player-box-2">
-        <figure><img id="avatar2" src="#" alt="Player 2">
+        <figure><img id="avatar2" class="player-box-avatar" src="#" alt="Player 2">
           <img class="projectile" id="player-two-projectile" src="#" alt="">
           <figcaption class="name"></figcaption>
         </figure>
@@ -163,16 +175,24 @@
         </figure>
         <p class="weapon-description"></p>
         <figure id="player-two-shield" class="shield hide">
-          <img src="assets/img/items/shield/shield1.png" alt="" class="weapon">
-          <figcaption class="shield">Shield</figcaption>
+          <img src="assets/img/items/shield/shield1.png" alt="" class="shield">
+          <figcaption class="">Shield</figcaption>
         </figure>
         <h3>Max AP</h3>
         <p><span class="attack-points"></span></p>
+      </section>
 
+      <!-- Player Two On Screen Keys -->
+      <section class="onscreen-keys-two">
+        <section class="player-keys">
+          <button id="player-two-up-key">&#x1F829;</button>
+          <section><button id="player-two-left-key">&#x1F828;</button> <button
+              id="player-two-right-key">&#x1F82A;</button></section>
+          <button id="player-two-down-key">&#x1F82B;</button>
+        </section>
       </section>
     </section>
     <!-- End Player Two -->
-
   </section>
 
   <!-- Modal Game Over-->
@@ -199,7 +219,8 @@
       <p>Your Shield is Already Up. ATTACK!!!!</p>
     </section>
   </section>
-  <script type="module" src="js/app.js"></script>
+
+  <script type="module" src="js/game.js"></script>
 </body>
 
 </html>

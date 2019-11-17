@@ -102,6 +102,7 @@ label[for="player-two"] {
 
 .modal footer.modal-footer button {
   padding: 10px;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   background-color: #a52a2a;
@@ -109,7 +110,7 @@ label[for="player-two"] {
   border-radius: 5px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .modal footer.modal-footer button:hover {
@@ -156,7 +157,7 @@ label[for="player-two"] {
   background-color: hsla(120, 100%, 25%, 0.5);
 }
 
-.winner {
+.winner-modal {
   opacity: 1;
   pointer-events: auto;
   display: flex;
@@ -165,7 +166,7 @@ label[for="player-two"] {
   align-items: center;
 }
 
-.winner .modal-content {
+.winner-modal .modal-content {
   display: flex;
   flex-direction: column;
   justify-content: center;

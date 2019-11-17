@@ -2,69 +2,69 @@ import { shuffle } from './game-utilities.js';
 
 export const galleryImgs = [
   {
-    image: '../assets/img/gallery/1-select-avatar.png',
+    image: 'assets/img/gallery/1-select-avatar.png',
     caption: 'Enter a Cool Code Name and Select an Avatar'
   },
   {
-    image: '../assets/img/gallery/2-highlighted-moves.png',
+    image: 'assets/img/gallery/2-highlighted-moves.png',
     caption: 'Available Moves are Highlighted in Green'
   },
   {
-    image: '../assets/img/gallery/3-highlighted-moves2.png',
+    image: 'assets/img/gallery/3-highlighted-moves2.png',
     caption: 'Available Moves are Highlighted in Green'
   },
   {
-    image: '../assets/img/gallery/4-highlighted-moves3.png',
+    image: 'assets/img/gallery/4-highlighted-moves3.png',
     caption: 'Available Moves are Highlighted in Green'
   },
   {
-    image: '../assets/img/gallery/5-weapons1.png',
+    image: 'assets/img/gallery/5-weapons1.png',
     caption: 'Select the best Weapon on the Board'
   },
   {
-    image: '../assets/img/gallery/6-weapons2.png',
+    image: 'assets/img/gallery/6-weapons2.png',
     caption:
       'The best Weapon would be the one with the highest Maximum Attack Points(AP)'
   },
   {
-    image: '../assets/img/gallery/7-weapons3.png',
+    image: 'assets/img/gallery/7-weapons3.png',
     caption:
       'Selecting the best Weapon is the first step to winning your Battle'
   },
   {
-    image: '../assets/img/gallery/8-replace-weapons.png',
+    image: 'assets/img/gallery/8-replace-weapons.png',
     caption: 'Move to a Weapon Square to pick it up'
   },
   {
-    image: '../assets/img/gallery/9-battle-condition.png',
+    image: 'assets/img/gallery/9-battle-condition.png',
     caption: 'Move to your opponents Adjacent Square to start a battle'
   },
   {
-    image: '../assets/img/gallery/10-battle-condition2.png',
+    image: 'assets/img/gallery/10-battle-condition2.png',
     caption: 'Try to Start a Battle before your opponent replaces their weapon'
   },
   {
-    image: '../assets/img/gallery/11-battle-condition3.png',
+    image: 'assets/img/gallery/11-battle-condition3.png',
     caption: 'Move to your opponents Adjacent Square to start a battle'
   },
   {
-    image: '../assets/img/gallery/12-attack1.png',
+    image: 'assets/img/gallery/12-attack1.png',
     caption: 'Weapons are activated in Battle Mode'
   },
   {
-    image: '../assets/img/gallery/13-attack2.png',
+    image: 'assets/img/gallery/13-attack2.png',
     caption: 'Click on your weapon to launch it at your opponent'
   },
   {
-    image: '../assets/img/gallery/14-attack3.png',
+    image: 'assets/img/gallery/14-attack3.png',
     caption: 'A turn is completed when your opponent responds to your attack'
   },
   {
-    image: '../assets/img/gallery/15-raise-shields1.png',
+    image: 'assets/img/gallery/15-raise-shields1.png',
     caption: 'Click on your Shield to activate it'
   },
   {
-    image: '../assets/img/gallery/16-raise-shields2.png',
+    image: 'assets/img/gallery/16-raise-shields2.png',
     caption: 'Use shields to reduce potential damage by half'
   }
 ];
@@ -183,7 +183,7 @@ const weaponItems = [
   {
     name: 'Steel Boots',
     id: 1,
-    description: 'These boots will boost your Max. damage to 16',
+    description: 'These boots will boost your Max. AP to 16',
     weaponUrl: 'assets/img/items/weapons/steel-boots.png',
     miniImgUrl: 'assets/img/items/weapons-mini/steel-boots-mini.png',
     damage: 16,
@@ -192,7 +192,7 @@ const weaponItems = [
   {
     name: 'Ice Strike',
     id: 2,
-    description: 'From Deep Ice. You get Max. attack points of 18',
+    description: 'From Deep Ice. You get Max. AP of 18',
     weaponUrl: 'assets/img/items/weapons/ice.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-mini.png',
     damage: 18,
@@ -201,7 +201,7 @@ const weaponItems = [
   {
     name: 'Ice Sword',
     id: 3,
-    description: 'Cut through anything for a Max. 20 point damage',
+    description: 'Cut through anything for a Max. 20 AP',
     weaponUrl: 'assets/img/items/weapons/ice-sword.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-sword-mini.png',
     damage: 20,
@@ -210,7 +210,7 @@ const weaponItems = [
   {
     name: 'Flame Ice',
     id: 4,
-    description: 'A rare item that raises Max. damage to 22',
+    description: 'A rare item that raises Max. AP to 22',
     weaponUrl: 'assets/img/items/weapons/ice-fire.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ice-fire-mini.png',
     damage: 22,
@@ -219,7 +219,7 @@ const weaponItems = [
   {
     name: 'Grapes',
     id: 5,
-    description: 'Food Fight!!! Raises Max. damage to 14',
+    description: 'Food Fight!!! Raises Max. AP to 14',
     weaponUrl: 'assets/img/items/weapons/grapes.png',
     miniImgUrl: 'assets/img/items/weapons-mini/grapes-mini.png',
     damage: 14,
@@ -228,7 +228,7 @@ const weaponItems = [
   {
     name: 'Fire Ball',
     id: 6,
-    description: 'It Burns!!! Your Max. damage rises to 18',
+    description: 'It Burns!!! Your Max. AP rises to 18',
     weaponUrl: 'assets/img/items/weapons/flame.png',
     miniImgUrl: 'assets/img/items/weapons-mini/flame-mini.png',
     damage: 18,
@@ -237,7 +237,7 @@ const weaponItems = [
   {
     name: 'Flame Sword',
     id: 7,
-    description: 'The bane of the dark. Raises Max. damage to 20',
+    description: 'The bane of the dark. Raises AP to 20',
     weaponUrl: 'assets/img/items/weapons/flame-sword.png',
     miniImgUrl: 'assets/img/items/weapons-mini/flame-sword-mini.png',
     damage: 20,
@@ -246,7 +246,7 @@ const weaponItems = [
   {
     name: 'Dual Axe',
     id: 8,
-    description: 'Strikes both ways! You get a Max. 16 points damage',
+    description: 'Strikes both ways! You get 16 Max. AP',
     weaponUrl: 'assets/img/items/weapons/dual-ax.png',
     miniImgUrl: 'assets/img/items/weapons-mini/dual-ax-mini.png',
     damage: 16,
@@ -255,7 +255,7 @@ const weaponItems = [
   {
     name: 'Drumsticks',
     id: 9,
-    description: 'Tasty! Able to dish out up to a 14 point damage',
+    description: 'Tasty! Able to dish out up to 14 AP',
     weaponUrl: 'assets/img/items/weapons/drumsticks.png',
     miniImgUrl: 'assets/img/items/weapons-mini/drumsticks-mini.png',
     damage: 14,
@@ -264,7 +264,7 @@ const weaponItems = [
   {
     name: 'Dark Spear',
     id: 10,
-    description: 'Nothing is safe from its potential 22 point damage',
+    description: 'Nothing is safe from its potential 22 AP',
     weaponUrl: 'assets/img/items/weapons/dragon-glass-spear.png',
     miniImgUrl: 'assets/img/items/weapons-mini/dragon-glass-spear-mini.png',
     damage: 22,
@@ -273,7 +273,7 @@ const weaponItems = [
   {
     name: 'Gold Cheese',
     id: 11,
-    description: 'You get to hit for a Max. 14 point damage',
+    description: 'You get to hit for a Max. 14 AP',
     weaponUrl: 'assets/img/items/weapons/cheese.png',
     miniImgUrl: 'assets/img/items/weapons-mini/cheese-mini.png',
     damage: 14,
@@ -282,7 +282,7 @@ const weaponItems = [
   {
     name: 'Blue Blade',
     id: 12,
-    description: 'Unbreakable! Can deal a Max. 16 Point damage',
+    description: 'Unbreakable! Can deal a Max. 16 AP',
     weaponUrl: 'assets/img/items/weapons/blue-blade.png',
     miniImgUrl: 'assets/img/items/weapons-mini/blue-blade-mini.png',
     damage: 16,
@@ -291,7 +291,7 @@ const weaponItems = [
   {
     name: 'Red Axe',
     id: 13,
-    description: 'A basic weapon. It has a 10 Attack Point damage',
+    description: 'A basic weapon. It has a 10 AP',
     weaponUrl: 'assets/img/items/weapons/ax.png',
     miniImgUrl: 'assets/img/items/weapons-mini/ax-mini.png',
     damage: 10,
@@ -322,9 +322,13 @@ export const defaultWeapon = weaponItems
   .map(weapon => weapon);
 
 export function setAvatarInputOptions(images) {
-  images.forEach((img, index) => {
-    img.src = imgSrc[index];
-    img.previousElementSibling.id = inputId[index];
-    img.parentElement.setAttribute('for', inputId[index]);
+  images.each((index, img) => {
+    $(img).attr('src', imgSrc[index]);
+    $(img)
+      .prev()
+      .attr('id', inputId[index]);
+    $(img)
+      .parent()
+      .attr('for', inputId[index]);
   });
 }
