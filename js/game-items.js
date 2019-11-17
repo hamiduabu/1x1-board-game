@@ -7,15 +7,17 @@ export const galleryImgs = [
   },
   {
     image: 'assets/img/gallery/2-highlighted-moves.png',
-    caption: 'Available Moves are Highlighted in purple or green'
+
+    caption: 'Available Moves are Highlighted in Purple or Green'
   },
   {
     image: 'assets/img/gallery/3-highlighted-moves2.png',
-    caption: 'Available Moves are Highlighted in purple or green'
+    caption: 'Available Moves are Highlighted in Purple or Green'
   },
   {
     image: 'assets/img/gallery/4-highlighted-moves3.png',
-    caption: 'Available Moves are Highlighted in purple or green'
+    caption: 'Available Moves are Highlighted Purple or Green'
+
   },
   {
     image: 'assets/img/gallery/5-weapons1.png',
