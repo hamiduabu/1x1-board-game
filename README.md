@@ -36,3 +36,12 @@ To run this project locally
   - Instructions for live-server can be found [here](https://www.npmjs.com/package/live-server)
 
 - With your local server running, visit the site: `http://localhost:{portNumber}` in Chrome or in your preferred browser.
+
+## Player Movement
+
+To move your your character, use the **on-screen** arrow keys **OR** the arrow keys on your **keyboard**
+
+- Press/Click the up arrow key **[ ↑ ]** to move your character upwards.
+- Press/Click the down arrow key **[ ↓ ]** to move your character downwards.
+- Press/Click the right arrow key **[ → ]** to move your character to the right.
+- Press/Click the left arrow key **[ ← ]** to move your character to the left.

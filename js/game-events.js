@@ -185,6 +185,12 @@ export function startSlideShow() {
   });
 }
 
+// Set new image and new caption text
+function setGalleryImageAndCaption(imageSelector, textSelector, index) {
+  imageSelector.attr('src', item.galleryImgs[index].image);
+  textSelector.text(item.galleryImgs[index].caption);
+}
+
 // Change images on slide show
 function switchImages(imageIndex) {
   game.gallery.addClass('invisible');
@@ -197,16 +203,11 @@ function switchImages(imageIndex) {
   }, 1000);
   setTimeout(() => {
     game.gallery.addClass('visible');
-  }, 1000);
+  }, 1500);
   setTimeout(() => {
     game.gallery.removeClass('invisible');
     game.gallery.removeClass('visible');
-  }, 1500);
-}
-
-function setGalleryImageAndCaption(imageSelector, textSelector, index) {
-  imageSelector.attr('src', item.galleryImgs[index].image);
-  textSelector.text(item.galleryImgs[index].caption);
+  }, 2000);
 }
 
 // Get players details from Modal Dialog Form
